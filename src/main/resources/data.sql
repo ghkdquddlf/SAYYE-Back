@@ -16,7 +16,7 @@ VALUES ('회의실 A', 1, 4, '작은 회의용'),
 -- =========================
 -- Classes 테이블
 -- =========================
-INSERT INTO classes (className, start_date, end_date)
+INSERT INTO classes (class_name, start_date, end_date)
 VALUES ('자바 기초', '2025-12-01', '2025-12-31'),
        ('스프링 부트', '2025-12-05', '2025-12-25'),
        ('데이터베이스', '2025-12-10', '2025-12-30');
