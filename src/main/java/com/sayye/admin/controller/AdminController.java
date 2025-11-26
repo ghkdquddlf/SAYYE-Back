@@ -18,18 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/users")
 public class AdminController {
 
-    private final AdminService service;
+    private final AdminService adminService;
 
     // 관리자 전체 조회
     @GetMapping
     public ResponseEntity<List<AdminResponse>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+        return ResponseEntity.ok(adminService.findAll());
     }
 
     // 관리자 단일 조회
     @GetMapping("/{userId}")
     public ResponseEntity<AdminResponse> findById(@PathVariable Long userId) {
-        return ResponseEntity.ok(service.findById(userId));
+        return ResponseEntity.ok(adminService.findById(userId));
     }
 
     // 관리자 비밀번호 수정(AuthAdmin 추가해야 함)
@@ -38,6 +38,6 @@ public class AdminController {
         @PathVariable Long userId,
         @RequestBody UpdatePasswordRequest request
     ) {
-        service.updatePassword(userId, request);
+        adminService.updatePassword(userId, request);
     }
 }

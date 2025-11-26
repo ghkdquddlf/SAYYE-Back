@@ -8,7 +8,6 @@ import com.sayye.exception.ApiException;
 import com.sayye.exception.ErrorCode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AdminService {
 
-    private final AdminRepository repository;
+    private final AdminRepository adminRepository;
 
     // 관리자 전체 조회
     @Transactional(readOnly = true)
     public List<AdminResponse> findAll() {
-        List<Admin> admins = repository.findAll();
+        List<Admin> admins = adminRepository.findAll();
         List<AdminResponse> dtoList = new ArrayList<>();
 
         for (Admin admin : admins) {
@@ -57,7 +56,7 @@ public class AdminService {
 
     // id로 관리자 찾는 메서드
     private Admin getAdminById(Long userId) {
-        return repository.findById(userId).orElseThrow(
+        return adminRepository.findById(userId).orElseThrow(
             () -> new ApiException(ErrorCode.ADMIN_NOT_FOUND_ERROR)
         );
     }
