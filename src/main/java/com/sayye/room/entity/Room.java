@@ -38,4 +38,12 @@ public class Room {
     @OneToMany(mappedBy = "room")
     private List<Reservation> reservations = new ArrayList<>();
 
+    //room_name, location, capacity, description
+
+    public Room(String roomName, Integer location, Integer capacity, String description) {
+        this.roomName = roomName;
+        this.location = location;
+        this.capacity = capacity;
+        this.description = description;
+    }
 }
