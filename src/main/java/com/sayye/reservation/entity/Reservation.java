@@ -48,4 +48,14 @@ public class Reservation {
 
     @Column(nullable = false)
     private LocalDate reservationDate;
+
+    public boolean isOwner(String userName, String phoneLastNumber) {
+        return this.userName.equals(userName) && this.phoneLastNumber.equals(phoneLastNumber);
+    }
+
+    public boolean isCancelable() {
+        LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, startTime);
+        // 현재 시간이 예약 시작 시간보다 1시간 전인지
+        return LocalDateTime.now().isBefore(reservationDateTime.minusHours(1));
+    }
 }
