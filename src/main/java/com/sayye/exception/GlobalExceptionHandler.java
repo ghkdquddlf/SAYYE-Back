@@ -33,7 +33,9 @@ public class GlobalExceptionHandler {
             .stream()
             .collect(Collectors.toMap(
                 FieldError::getField, // 필드 이름을 key로
-                FieldError::getDefaultMessage // 기본 메시지를 value로 (validation에 작성한 메시지)
+                // 기본 메시지를 value로 (validation에 작성한 메시지)
+                // 중복 시 기존 메시지
+                FieldError::getDefaultMessage, (existingMsg, newMsg) -> existingMsg
             ));
 
         log.warn("Validation failed: {}", errors, e);
