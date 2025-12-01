@@ -2,6 +2,7 @@ package com.sayye.reservation.controller;
 
 import com.sayye.reservation.dto.CancelReservationReqDto;
 import com.sayye.reservation.service.ReservationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +19,7 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @DeleteMapping("/{reservationId}")
-    public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId, @RequestBody
+    public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId, @Valid @RequestBody
     CancelReservationReqDto reqDto) {
         reservationService.cancelReservation(reservationId, reqDto);
         return ResponseEntity.noContent().build();
