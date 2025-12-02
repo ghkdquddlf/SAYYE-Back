@@ -12,8 +12,10 @@ import jakarta.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Table(name = "rooms")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
