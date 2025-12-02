@@ -5,6 +5,8 @@ import com.sayye.course.entity.Course;
 import com.sayye.room.entity.Room;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,8 +18,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Table(name = "reservations")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -41,6 +45,10 @@ public class Reservation extends BaseEntity {
     @Column(nullable = false)
     private String phoneLastNumber;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ReservationStatus status;
+
     @Column(nullable = false)
     private LocalTime startTime;
 
@@ -54,6 +62,7 @@ public class Reservation extends BaseEntity {
         return this.userName.equals(userName) && this.phoneLastNumber.equals(phoneLastNumber);
     }
 
+    // Todo 파라미터 시간
     public boolean isCancelable() {
         LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, startTime);
         // 현재 시간이 예약 시작 시간보다 1시간 전인지
