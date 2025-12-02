@@ -1,5 +1,6 @@
 package com.sayye.reservation.entity;
 
+import com.sayye.baseEntity.BaseEntity;
 import com.sayye.course.entity.Course;
 import com.sayye.room.entity.Room;
 import jakarta.persistence.Column;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "reservations")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Reservation {
+public class Reservation extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
