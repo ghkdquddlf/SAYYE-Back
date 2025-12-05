@@ -59,7 +59,7 @@ public class Reservation extends BaseEntity {
     @Column(nullable = false)
     private LocalDate reservationDate;
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     private Reservation(Course course, Room room, String userName, String phoneLastNumber,
         LocalTime startTime, LocalTime endTime, LocalDate reservationDate,
         ReservationStatus status) {
