@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -57,6 +58,34 @@ public class Reservation extends BaseEntity {
 
     @Column(nullable = false)
     private LocalDate reservationDate;
+
+    @Builder
+    private Reservation(Course course, Room room, String userName, String phoneLastNumber,
+        LocalTime startTime, LocalTime endTime, LocalDate reservationDate,
+        ReservationStatus status) {
+        this.course = course;
+        this.room = room;
+        this.userName = userName;
+        this.phoneLastNumber = phoneLastNumber;
+        this.status = status;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.reservationDate = reservationDate;
+    }
+
+    public static Reservation of(Room room, Course course, String userName, String phoneLastNumber,
+        LocalTime startTime, LocalTime endTime, LocalDate reservationDate) {
+        return Reservation.builder()
+            .course(course)
+            .room(room)
+            .userName(userName)
+            .phoneLastNumber(phoneLastNumber)
+            .startTime(startTime)
+            .status(ReservationStatus.RESERVED)
+            .endTime(endTime)
+            .reservationDate(reservationDate)
+            .build();
+    }
 
     public boolean isOwner(String userName, String phoneLastNumber) {
         return this.userName.equals(userName) && this.phoneLastNumber.equals(phoneLastNumber);
