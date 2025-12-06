@@ -2,6 +2,7 @@ package com.sayye.room.entity;
 
 import com.sayye.reservation.entity.Reservation;
 import com.sayye.room.dto.response.RoomResDto;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,10 +40,9 @@ public class Room {
 
     private String description;
 
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
 
-    //room_name, location, capacity, description
 
     @Builder
     public Room(String roomName, Integer location, Integer capacity, String description) {

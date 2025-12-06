@@ -55,4 +55,12 @@ public class RoomService {
                    .collect(Collectors.toList());
 
     }
+
+    public void deleteRoom(Long roomId) {
+
+        Room room = roomRepository.findById(roomId)
+            .orElseThrow(()-> new ApiException(ErrorCode.ROOM_NOT_FOUND));
+
+        roomRepository.delete(room);
+    }
 }

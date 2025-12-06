@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,5 +46,12 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(roomService.getAllRooms());
     }
 
+    @DeleteMapping("/{roomId}")
+    public ResponseEntity<String> deleteRoom(@PathVariable Long roomId){
+
+        roomService.deleteRoom(roomId);
+        return ResponseEntity.status(HttpStatus.OK).body("회의실 정보가 삭제되었습니다.");
+
+    }
 
 }
