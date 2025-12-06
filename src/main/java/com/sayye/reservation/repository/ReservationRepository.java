@@ -4,6 +4,7 @@ import com.sayye.reservation.entity.Reservation;
 import com.sayye.reservation.entity.ReservationStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -31,9 +32,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             and r.status <> :cancelledStatus
             and (r.startTime < :endTime and r.endTime > :startTime)
         """)
-    Long existsOverlap(@Param("roomId") Long roomId,
-        @Param("date") LocalDate date,
-        @Param("startTime") LocalTime startTime,
-        @Param("endTime") LocalTime endTime,
+    Long existsOverlap(@Param("roomId") Long roomId, @Param("date") LocalDate date,
+        @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime,
         @Param("cancelledStatus") ReservationStatus cancelledStatus);
+
+    List<Reservation> findAllByRoomIdAndReservationDateAndStatusNotOrderByStartTimeAsc(Long roomId,
+        LocalDate date, ReservationStatus status);
 }

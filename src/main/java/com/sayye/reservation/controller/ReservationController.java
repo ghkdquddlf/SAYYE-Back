@@ -6,6 +6,8 @@ import com.sayye.reservation.dto.ReservationReqDto;
 import com.sayye.reservation.dto.ReservationResDto;
 import com.sayye.reservation.service.ReservationService;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -50,6 +52,13 @@ public class ReservationController {
         @Valid @RequestBody ReservationReqDto reqDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(reservationService.createReservation(roomId, reqDto));
+    }
+
+    // Todo RoomController로 이동 필요할듯 (/rooms/{roomId}/reservations)
+    @GetMapping("/{roomId}")
+    public ResponseEntity<List<ReservationResDto>> getReservationsByRoomId(
+        @PathVariable Long roomId, @RequestParam LocalDate reservationDate) {
+        return ResponseEntity.ok(reservationService.getReservationsByRoomId(roomId, reservationDate));
     }
 }
 
