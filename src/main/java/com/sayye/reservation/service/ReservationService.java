@@ -14,7 +14,9 @@ import com.sayye.reservation.repository.ReservationRepository;
 import com.sayye.room.entity.Room;
 import com.sayye.room.repository.RoomRepository;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -85,6 +87,7 @@ public class ReservationService {
         }
 
         // 예약자가 예약한 시간에 이미 예약 되어 있다면
+        // Todo room.getId로 수정 필요
         if (reservationRepository.existsOverlap(roomId, reqDto.getReservationDate(),
             reqDto.getStartTime(), reqDto.getEndTime(), ReservationStatus.CANCELED) > 0) {
             throw new ApiException(ErrorCode.RESERVATION_TIME_OVERLAPPED);
@@ -92,6 +95,19 @@ public class ReservationService {
 
         Reservation saved = reservationRepository.save(reqDto.toEntity(room, course));
         return ReservationResDto.from(saved);
+
+    }
+
+
+    public List<ReservationResDto> getReservationsByRoomId(Long roomId, LocalDate reservationDate) {
+        // Todo 회의실 존재 여부 검증
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException());
+
+        List<Reservation> reservations = reservationRepository.
+            findAllByRoomIdAndReservationDateAndStatusNotOrderByStartTimeAsc(room.getId(),
+                reservationDate, ReservationStatus.CANCELED);
+
+        return reservations.stream().map(ReservationResDto::from).toList();
 
     }
 

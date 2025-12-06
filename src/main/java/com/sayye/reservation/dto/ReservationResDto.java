@@ -13,6 +13,7 @@ public class ReservationResDto {
     private Long id;
     private String roomName;
     private String userName;
+    private String status;
     private LocalTime startTime;
     private LocalTime endTime;
     private LocalDate reservationDate;
@@ -22,6 +23,7 @@ public class ReservationResDto {
             .id(reservation.getId())
             .roomName(reservation.getRoom().getRoomName())
             .userName(reservation.getUserName())
+            .status(reservation.getStatus().getDescription())
             .startTime(reservation.getStartTime())
             .endTime(reservation.getEndTime())
             .reservationDate(reservation.getReservationDate())
