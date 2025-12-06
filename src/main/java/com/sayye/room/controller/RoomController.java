@@ -5,6 +5,7 @@ import com.sayye.room.dto.request.RoomCreateReqDto;
 import com.sayye.room.dto.response.RoomResDto;
 import com.sayye.room.service.RoomService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,12 @@ public class RoomController {
     ){
 
         return ResponseEntity.status(HttpStatus.OK).body(roomService.getRoomById(roomId));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RoomResDto>> getAllRooms(){
+
+        return ResponseEntity.status(HttpStatus.OK).body(roomService.getAllRooms());
     }
 
 

@@ -7,6 +7,8 @@ import com.sayye.room.dto.request.RoomCreateReqDto;
 import com.sayye.room.dto.response.RoomResDto;
 import com.sayye.room.entity.Room;
 import com.sayye.room.repository.RoomRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,4 +45,14 @@ public class RoomService {
         return RoomResDto.from(room);
     }
 
+    @Transactional(readOnly = true)
+    public List<RoomResDto> getAllRooms() {
+
+        List<Room> rooms = roomRepository.findAll();
+
+        return rooms.stream()
+                   .map(RoomResDto::from)
+                   .collect(Collectors.toList());
+
+    }
 }
