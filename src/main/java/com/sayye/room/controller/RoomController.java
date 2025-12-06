@@ -1,9 +1,10 @@
 package com.sayye.room.controller;
 
 
-import com.sayye.room.dto.RoomReqDto;
-import com.sayye.room.dto.RoomResDto;
+import com.sayye.room.dto.request.RoomCreateReqDto;
+import com.sayye.room.dto.response.RoomResDto;
 import com.sayye.room.service.RoomService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +22,10 @@ public class RoomController {
 
     @PostMapping
     public ResponseEntity<RoomResDto> createRoom(
-        @RequestBody RoomReqDto roomReqDto
+        @Valid @RequestBody RoomCreateReqDto roomCreateReqDto
     ){
 
-        return ResponseEntity.status(HttpStatus.OK).body(roomService.createRoom(roomReqDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(roomService.createRoom(roomCreateReqDto));
     }
 
 

@@ -1,14 +1,15 @@
 package com.sayye.room.service;
 
 
-import com.sayye.room.dto.RoomReqDto;
-import com.sayye.room.dto.RoomResDto;
+import com.sayye.exception.ApiException;
+import com.sayye.exception.ErrorCode;
+import com.sayye.room.dto.request.RoomCreateReqDto;
+import com.sayye.room.dto.response.RoomResDto;
 import com.sayye.room.entity.Room;
 import com.sayye.room.repository.RoomRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Service
 @Transactional
@@ -17,15 +18,18 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
 
-    public RoomResDto createRoom(RoomReqDto roomReqDto) {
+    public RoomResDto createRoom(RoomCreateReqDto roomCreateReqDto) {
 
-        Room room   = new Room(roomReqDto.getRoomName(),roomReqDto.getLocation(),
-            roomReqDto.getCapacity(), roomReqDto.getDescription()) ;
+        if(roomRepository.findByRoomName(roomCreateReqDto.getRoomName())){
+            throw new ApiException(ErrorCode.ROOM_NAME_DUPLICATED);
+        }
+        Room room   = new Room(roomCreateReqDto.getRoomName(), roomCreateReqDto.getLocation(),
+            roomCreateReqDto.getCapacity(), roomCreateReqDto.getDescription()) ;
 
 
-        roomRepository.save(room);
+        Room saved = roomRepository.save(room);
 
 
-        return room;
+        return RoomResDto.from(saved);
     }
 }
