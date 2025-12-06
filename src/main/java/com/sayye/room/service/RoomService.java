@@ -7,9 +7,9 @@ import com.sayye.room.dto.request.RoomCreateReqDto;
 import com.sayye.room.dto.response.RoomResDto;
 import com.sayye.room.entity.Room;
 import com.sayye.room.repository.RoomRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -32,4 +32,15 @@ public class RoomService {
 
         return RoomResDto.from(saved);
     }
+
+    @Transactional(readOnly = true)
+    public RoomResDto getRoomById(Long roomId) {
+
+        Room room = roomRepository.findById(roomId).orElseThrow(
+            ()-> new ApiException(ErrorCode.ROOM_NOT_FOUND)
+        );
+
+        return RoomResDto.from(room);
+    }
+
 }
