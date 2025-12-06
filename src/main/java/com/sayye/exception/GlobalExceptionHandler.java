@@ -1,5 +1,6 @@
 package com.sayye.exception;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -7,12 +8,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final String TYPE_MISMATCH_MESSAGE = "입력값이 올바르지 않습니다.";
+    private static final String MISSING_PARAM_MESSAGE = "필수 파라미터가 누락되었습니다.";
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<String> handleCustomException(ApiException e) {
@@ -24,6 +30,7 @@ public class GlobalExceptionHandler {
             .body(errorCode.getMessage());
     }
 
+    // DTO Validation 예외
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationException(
         MethodArgumentNotValidException e) {
@@ -44,4 +51,39 @@ public class GlobalExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(errors);
     }
+
+    // 컨트롤러 파라미터 타입 예외
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, String>> handleTypeMismatch(
+        MethodArgumentTypeMismatchException e) {
+        Map<String, String> errors = new HashMap<>();
+
+        String fieldName = e.getName();
+
+        errors.put(fieldName, TYPE_MISMATCH_MESSAGE);
+
+        log.warn("Type mismatch: {} -> {}", fieldName, e.getValue());
+
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(errors);
+    }
+
+    // 컨트롤러 파라미터 예외
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<Map<String, String>> handleMissingParams(
+        MissingServletRequestParameterException e) {
+        Map<String, String> errors = new HashMap<>();
+
+        String missingParam = e.getParameterName();
+        errors.put(missingParam, MISSING_PARAM_MESSAGE);
+
+        log.warn("Missing Parameter: {}", missingParam);
+
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(errors);
+    }
+
+    // Todo 매핑되는 컨트롤러가 없을 때 등등 처리 필요
 }
