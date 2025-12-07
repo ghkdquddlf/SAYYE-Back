@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class RoomResDto {
+
     private Long id;
     private String roomName;
     private int location;
@@ -14,7 +15,7 @@ public class RoomResDto {
     private String description;
 
 
-    public static RoomResDto from(Room room){
+    public static RoomResDto from(Room room) {
         return RoomResDto.builder()
                    .id(room.getId())
                    .roomName(room.getRoomName())

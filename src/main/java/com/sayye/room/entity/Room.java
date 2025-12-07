@@ -2,7 +2,6 @@ package com.sayye.room.entity;
 
 import com.sayye.reservation.entity.Reservation;
 import com.sayye.room.dto.request.RoomReqDto;
-import com.sayye.room.dto.response.RoomResDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +17,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
@@ -42,7 +40,7 @@ public class Room {
 
     private String description;
 
-    @OneToMany(mappedBy = "room" , cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
 
 
@@ -54,7 +52,7 @@ public class Room {
         this.description = description;
     }
 
-    public void update(RoomReqDto roomReqDto){
+    public void update(RoomReqDto roomReqDto) {
         this.roomName = roomReqDto.getRoomName();
         this.location = roomReqDto.getLocation();
         this.capacity = roomReqDto.getCapacity();

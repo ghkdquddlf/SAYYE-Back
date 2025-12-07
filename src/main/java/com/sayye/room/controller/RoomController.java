@@ -28,7 +28,7 @@ public class RoomController {
     @PostMapping
     public ResponseEntity<RoomResDto> createRoom(
         @Valid @RequestBody RoomReqDto roomReqDto
-    ){
+    ) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(roomService.createRoom(roomReqDto));
     }
@@ -36,19 +36,19 @@ public class RoomController {
     @GetMapping("/{roomId}")
     public ResponseEntity<RoomResDto> getRoomById(
         @PathVariable Long roomId
-    ){
+    ) {
 
         return ResponseEntity.status(HttpStatus.OK).body(roomService.getRoomById(roomId));
     }
 
     @GetMapping
-    public ResponseEntity<List<RoomResDto>> getAllRooms(){
+    public ResponseEntity<List<RoomResDto>> getAllRooms() {
 
         return ResponseEntity.status(HttpStatus.OK).body(roomService.getAllRooms());
     }
 
     @DeleteMapping("/{roomId}")
-    public ResponseEntity<String> deleteRoom(@PathVariable Long roomId){
+    public ResponseEntity<String> deleteRoom(@PathVariable Long roomId) {
 
         roomService.deleteRoom(roomId);
         return ResponseEntity.status(HttpStatus.OK).body("회의실 정보가 삭제되었습니다.");
@@ -59,9 +59,10 @@ public class RoomController {
     public ResponseEntity<RoomResDto> updateRoom(
         @PathVariable Long roomId,
         @Valid @RequestBody RoomReqDto roomReqDto
-    ){
+    ) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(roomService.updateRoom(roomId , roomReqDto));
+        return ResponseEntity.status(HttpStatus.OK)
+                   .body(roomService.updateRoom(roomId, roomReqDto));
     }
 
 }
