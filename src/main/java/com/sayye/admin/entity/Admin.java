@@ -17,15 +17,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "admins")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Admin extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // PK (auto-generated)
 
-    @Column(nullable = false)
-    private String adminId;
+    @Column(nullable = false, unique = true)
+    private String userId; // 관리자 계정 ID (로그인용)
 
     @Column(nullable = false)
     private String password;
@@ -38,6 +38,22 @@ public class Admin extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     // 관리자 비밀번호 수정 메서드
     public void updatePassword(String newPassword) {

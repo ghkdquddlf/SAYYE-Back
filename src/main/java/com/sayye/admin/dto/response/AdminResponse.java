@@ -11,7 +11,7 @@ public class AdminResponse {
 
     private final Long id;
 
-    private final String adminId;
+    private final String userId;
 
     private final String name;
 
@@ -21,7 +21,7 @@ public class AdminResponse {
 
     public AdminResponse(Admin admin) {
         this.id = admin.getId();
-        this.adminId = admin.getAdminId();
+        this.userId = admin.getUserId();
         this.name = admin.getName();
         this.email = admin.getEmail();
         this.role = admin.getRole();

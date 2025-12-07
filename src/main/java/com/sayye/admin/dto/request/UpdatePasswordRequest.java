@@ -8,10 +8,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UpdatePasswordRequest {
 
-    @NotBlank
+    @NotBlank(message = "기존 비밀번호는 필수입니다.")
     private String oldPassword;
 
-    @NotBlank
+    @NotBlank(message = "새 비밀번호는 필수입니다.")
     private String newPassword;
 
 }

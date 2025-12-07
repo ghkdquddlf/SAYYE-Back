@@ -1,6 +1,6 @@
 package com.sayye.admin.dto.request;
 
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LoginRequest {
 
-    @Column(nullable = false)
-    private final String email;
+    @NotBlank(message = "아이디는 필수입니다.")
+    private final String userId;
 
-    @Column(nullable = false)
+    @NotBlank(message = "비밀번호는 필수입니다.")
     private final String password;
 
 }
