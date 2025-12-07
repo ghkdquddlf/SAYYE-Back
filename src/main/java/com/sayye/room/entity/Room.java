@@ -1,6 +1,7 @@
 package com.sayye.room.entity;
 
 import com.sayye.reservation.entity.Reservation;
+import com.sayye.room.dto.request.RoomReqDto;
 import com.sayye.room.dto.response.RoomResDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,6 +18,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -50,6 +52,13 @@ public class Room {
         this.location = location;
         this.capacity = capacity;
         this.description = description;
+    }
+
+    public void update(RoomReqDto roomReqDto){
+        this.roomName = roomReqDto.getRoomName();
+        this.location = roomReqDto.getLocation();
+        this.capacity = roomReqDto.getCapacity();
+        this.description = roomReqDto.getDescription();
     }
 
 

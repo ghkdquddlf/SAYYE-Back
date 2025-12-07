@@ -1,7 +1,7 @@
 package com.sayye.room.controller;
 
 
-import com.sayye.room.dto.request.RoomCreateReqDto;
+import com.sayye.room.dto.request.RoomReqDto;
 import com.sayye.room.dto.response.RoomResDto;
 import com.sayye.room.service.RoomService;
 import jakarta.validation.Valid;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -26,10 +27,10 @@ public class RoomController {
 
     @PostMapping
     public ResponseEntity<RoomResDto> createRoom(
-        @Valid @RequestBody RoomCreateReqDto roomCreateReqDto
+        @Valid @RequestBody RoomReqDto roomReqDto
     ){
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(roomService.createRoom(roomCreateReqDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(roomService.createRoom(roomReqDto));
     }
 
     @GetMapping("/{roomId}")
@@ -52,6 +53,15 @@ public class RoomController {
         roomService.deleteRoom(roomId);
         return ResponseEntity.status(HttpStatus.OK).body("회의실 정보가 삭제되었습니다.");
 
+    }
+
+    @PutMapping("/{roomId}")
+    public ResponseEntity<RoomResDto> updateRoom(
+        @PathVariable Long roomId,
+        @Valid @RequestBody RoomReqDto roomReqDto
+    ){
+
+        return ResponseEntity.status(HttpStatus.OK).body(roomService.updateRoom(roomId , roomReqDto));
     }
 
 }

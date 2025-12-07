@@ -1,5 +1,6 @@
 package com.sayye.room.dto.request;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class RoomCreateReqDto {
+public class RoomReqDto {
 
 
         @NotBlank
@@ -17,8 +18,7 @@ public class RoomCreateReqDto {
 
         private int location;
 
-        @NotBlank
-        @Size(min = 1)
+        @Min(1)
         private int capacity;
 
         private String description;
