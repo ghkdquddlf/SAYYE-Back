@@ -2,7 +2,6 @@ package com.sayye.admin.controller;
 
 import com.sayye.admin.dto.request.UpdatePasswordRequest;
 import com.sayye.admin.dto.response.AdminResponse;
-import com.sayye.admin.dto.response.UpdatePasswordResponse;
 import com.sayye.admin.service.AdminService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin/users")
+@RequestMapping("/admins")
 public class AdminController {
 
     private final AdminService adminService;
@@ -43,13 +42,14 @@ public class AdminController {
 
     // 관리자 비밀번호 수정 - 본인만 가능
     @PatchMapping("/{userId}")
-    public ResponseEntity<UpdatePasswordResponse> updatePassword(
+    public ResponseEntity<String> updatePassword(
         @PathVariable Long userId,
         @Valid @RequestBody UpdatePasswordRequest req,
         Authentication authentication
     ) {
         adminService.updatePassword(userId, req, authentication.getName());
-        return ResponseEntity.ok(new UpdatePasswordResponse("비밀번호가 성공적으로 변경되었습니다."));
+        return ResponseEntity.ok()
+                .body("비밀번호 수정이 완료되었습니다.");
     }
 
     // 관리자 삭제 - MASTER만 가능

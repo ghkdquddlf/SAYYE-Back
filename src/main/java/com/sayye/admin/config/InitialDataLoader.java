@@ -20,15 +20,18 @@ public class InitialDataLoader implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
+
         // MASTER 계정이 없으면 생성
         if (adminRepository.findByUserId("master").isEmpty()) {
-            Admin master = new Admin();
-            master.setUserId("master");
-            master.setPassword(passwordEncoder.encode("password123"));
-            master.setName("마스터관리자");
-            master.setEmail("master@sesac.com");
-            master.setRole(Role.MASTER);
+
+            Admin master = Admin.createAdmin(
+                "master",
+                passwordEncoder.encode("password123"),
+                "마스터관리자",
+                "master@sesac.com",
+                Role.MASTER
+            );
             
             adminRepository.save(master);
             log.info("=================================");
@@ -36,9 +39,10 @@ public class InitialDataLoader implements CommandLineRunner {
             log.info("userId: master");
             log.info("password: password123");
             log.info("=================================");
+
         } else {
             log.info("MASTER 계정이 이미 존재합니다.");
         }
     }
-}
 
+}
