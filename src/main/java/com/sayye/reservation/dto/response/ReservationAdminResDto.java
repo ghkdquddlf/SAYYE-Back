@@ -1,4 +1,4 @@
-package com.sayye.reservation.dto;
+package com.sayye.reservation.dto.response;
 
 import com.sayye.reservation.entity.Reservation;
 import java.time.LocalDate;

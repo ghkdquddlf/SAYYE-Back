@@ -1,25 +1,20 @@
-package com.sayye.reservation.dto;
+package com.sayye.reservation.dto.request;
 
-import com.sayye.course.entity.Course;
-import com.sayye.reservation.entity.Reservation;
-import com.sayye.room.entity.Room;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-public class ReservationReqDto {
-
-    @NotNull(message = "클래스 Id는 필수입니다.")
-    @Positive(message = "클래스 Id는 양수여야 합니다.")
-    private Long courseId;
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class UpdateReservationReqDto {
 
     @NotBlank(message = "이름은 필수입니다.")
     @Size(min = 2, message = "이름은 최소 2글자 이상이어야 합니다.")
@@ -39,7 +34,6 @@ public class ReservationReqDto {
     @FutureOrPresent(message = "과거 날짜는 선택할 수 없습니다.")
     private LocalDate reservationDate;
 
-    // 스프링이 메서드 실행해서 검증해줌
     @AssertTrue(message = "종료 시간은 시작 시간보다 늦어야 합니다.")
     public boolean isTimeValid() {
         if (startTime == null || endTime == null) {
@@ -65,9 +59,5 @@ public class ReservationReqDto {
         return true;
     }
 
-    public Reservation toEntity(Room room, Course course) {
-        return Reservation.of(room, course, userName, phoneLastNumber, startTime, endTime,
-            reservationDate);
-    }
 
 }
