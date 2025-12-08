@@ -40,4 +40,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findAllByRoomIdAndReservationDateAndStatusNotOrderByStartTimeAsc(Long roomId,
         LocalDate date, ReservationStatus status);
+
+    List<Reservation> findByUserNameAndPhoneLastNumberOrderByCreatedAtDesc(String userName,
+        String phoneLastNumber);
 }

@@ -1,6 +1,7 @@
 package com.sayye.reservation.controller;
 
 import com.sayye.reservation.dto.request.CancelReservationReqDto;
+import com.sayye.reservation.dto.request.ReadReservationReqDto;
 import com.sayye.reservation.dto.request.ReservationReqDto;
 import com.sayye.reservation.dto.request.UpdateReservationReqDto;
 import com.sayye.reservation.dto.response.ReservationAdminResDto;
@@ -39,15 +40,26 @@ public class ReservationController {
 
     // 관리자 조회용
     @GetMapping
-    public ResponseEntity<Page<ReservationAdminResDto>> getAllReservations(
+    public ResponseEntity<Page<ReservationAdminResDto>> getAllReservationsForAdmin(
         @RequestParam(defaultValue = "1") int page) {
         int pageNumber = (page <= 0) ? 1 : page;
 
-        return ResponseEntity.ok(reservationService.getAllReservations(pageNumber));
+        return ResponseEntity.ok(reservationService.getAllReservationsForAdmin(pageNumber));
     }
 
-    // Todo 예약자 예약 내역 조회 필요
+    @PostMapping
+    public ResponseEntity<List<ReservationResDto>> getAllReservations(
+        @Valid @RequestBody ReadReservationReqDto reqDto) {
+        return ResponseEntity.ok(reservationService.getAllReservations(reqDto));
+    }
 
+    @PostMapping("/{reservationId}")
+    public ResponseEntity<ReservationResDto> getReservationDetail(
+        @PathVariable Long reservationId, @Valid @RequestBody ReadReservationReqDto reqDto) {
+        return ResponseEntity.ok(reservationService.getReservationDetail(reservationId, reqDto));
+    }
+
+    // Todo RoomController로 이동 필요할듯 (/rooms/{roomId}/reservations)
     @PostMapping("/{roomId}")
     public ResponseEntity<ReservationResDto> createReservation(@PathVariable Long roomId,
         @Valid @RequestBody ReservationReqDto reqDto) {
