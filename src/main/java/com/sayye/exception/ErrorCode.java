@@ -20,6 +20,12 @@ public enum ErrorCode {
 
     // 토큰
     TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "만료된 JWT 토큰입니다."),
+    TOKEN_UNSUPPORTED(HttpStatus.UNAUTHORIZED, "지원하지 않는 JWT 토큰입니다."),
+    TOKEN_MALFORMED(HttpStatus.UNAUTHORIZED, "잘못된 형식의 JWT 토큰입니다."),
+    TOKEN_SIGNATURE_INVALID(HttpStatus.UNAUTHORIZED, "JWT 서명 검증에 실패했습니다."),
+    TOKEN_ILLEGAL_ARGUMENT(HttpStatus.UNAUTHORIZED, "JWT 토큰이 비어있거나 잘못된 인자입니다."),
+    TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "블랙리스트에 등록된 토큰입니다."),
     TOKEN_ALREADY_LOGGED_OUT(HttpStatus.BAD_REQUEST, "이미 사용 완료된 토큰입니다."),
     TOKEN_TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "토큰 타입이 일치하지 않습니다."),
 
