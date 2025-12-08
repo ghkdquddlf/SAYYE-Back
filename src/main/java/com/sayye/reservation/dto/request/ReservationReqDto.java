@@ -1,4 +1,4 @@
-package com.sayye.reservation.dto;
+package com.sayye.reservation.dto.request;
 
 import com.sayye.course.entity.Course;
 import com.sayye.reservation.entity.Reservation;

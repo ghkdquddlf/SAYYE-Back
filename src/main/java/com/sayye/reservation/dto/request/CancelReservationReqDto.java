@@ -1,4 +1,4 @@
-package com.sayye.reservation.dto;
+package com.sayye.reservation.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
