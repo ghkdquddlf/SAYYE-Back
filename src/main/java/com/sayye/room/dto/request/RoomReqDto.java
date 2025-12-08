@@ -15,10 +15,10 @@ public class RoomReqDto {
     @NotBlank
     private String roomName;
 
-    private int location;
+    private Integer location;
 
     @Min(1)
-    private int capacity;
+    private Integer capacity;
 
     private String description;
 }
