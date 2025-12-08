@@ -10,8 +10,8 @@ public class RoomResDto {
 
     private Long id;
     private String roomName;
-    private int location;
-    private int capacity;
+    private Integer location;
+    private Integer capacity;
     private String description;
 
 
