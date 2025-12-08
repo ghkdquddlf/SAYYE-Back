@@ -23,6 +23,13 @@ public enum ErrorCode {
 
 
     // 예약
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 예약입니다."),
+    RESERVATION_UNAUTHORIZED(HttpStatus.FORBIDDEN, "예약자 정보가 일치하지 않습니다."),
+    RESERVATION_TIME_LIMIT_EXCEEDED(HttpStatus.FORBIDDEN, "예약 시작 1시간 전에는 취소/변경할 수 없습니다."),
+    RESERVATION_INVALID_START_TIME(HttpStatus.BAD_REQUEST, "10시 전에는 예약을 할 수 없습니다."),
+    RESERVATION_EXCEED_MAX_DURATION(HttpStatus.BAD_REQUEST, "예약 이용 시간은 최대 2시간입니다."),
+    RESERVATION_USER_DUPLICATED(HttpStatus.CONFLICT, "해당 예약자 정보로 동일한 날짜에 예약이 존재합니다."),
+    RESERVATION_TIME_OVERLAPPED(HttpStatus.CONFLICT,"이미 예약되어있습니다.");
 
     private final HttpStatus status;
     private final String message;

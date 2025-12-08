@@ -1,5 +1,6 @@
 package com.sayye.room.entity;
 
+import com.sayye.baseEntity.BaseEntity;
 import com.sayye.reservation.entity.Reservation;
 import com.sayye.room.dto.request.RoomReqDto;
 import jakarta.persistence.CascadeType;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "rooms")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Room {
+public class Room extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
