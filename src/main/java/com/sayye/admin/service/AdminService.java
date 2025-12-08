@@ -8,7 +8,6 @@ import com.sayye.admin.Role;
 import com.sayye.admin.repository.AdminRepository;
 import com.sayye.exception.ApiException;
 import com.sayye.exception.ErrorCode;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,14 +24,9 @@ public class AdminService {
 
     // 관리자 전체 조회
     public List<AdminResponse> findAll() {
-        List<Admin> admins = adminRepository.findAll();
-        List<AdminResponse> dtoList = new ArrayList<>();
-
-        for (Admin admin : admins) {
-            dtoList.add(new AdminResponse(admin));
-        }
-
-        return dtoList;
+        return adminRepository.findAll().stream()
+            .map(AdminResponse::new)
+            .toList();
     }
 
     public AdminResponse findById(
@@ -44,10 +38,8 @@ public class AdminService {
                 .orElseThrow(() -> new ApiException(ErrorCode.ADMIN_NOT_FOUND_ERROR));
         
         // MASTER는 모든 관리자 조회 가능, ADMIN은 본인만 조회 가능
-        if (currentAdmin.getRole() != Role.MASTER && !admin.getUserId().equals(currentUserId)) {
-            throw new ApiException(ErrorCode.ADMIN_ACCESS_DENIED);
-        }
-        
+        RoleAndSameUserVerification(currentUserId, currentAdmin, admin);
+
         return new AdminResponse(admin);
     }
 
@@ -64,29 +56,33 @@ public class AdminService {
         if (!admin.getUserId().equals(currentUserId)) {
             throw new ApiException(ErrorCode.ADMIN_ACCESS_DENIED);
         }
-        
+
         if (!passwordEncoder.matches(request.getOldPassword(), admin.getPassword())) {
             throw new ApiException(ErrorCode.ADMIN_PASSWORD_MISMATCH);
         }
+
         if (request.getOldPassword().equals(request.getNewPassword())) {
             throw new ApiException(ErrorCode.ADMIN_PASSWORD_SAME);
         }
+
         admin.updatePassword(passwordEncoder.encode(request.getNewPassword()));
     }
 
     @Transactional
-    public AdminResponse signup(SignupRequest req) {
+    public AdminResponse signup(SignupRequest request) {
         // 중복 체크
-        if (adminRepository.findByUserId(req.getUserId()).isPresent()) {
+        if (adminRepository.findByUserId(request.getUserId()).isPresent()) {
             throw new ApiException(ErrorCode.ADMIN_USER_ID_DUPLICATED);
         }
 
-        Admin admin = new Admin();
-        admin.setUserId(req.getUserId());
-        admin.setPassword(passwordEncoder.encode(req.getPassword()));
-        admin.setName(req.getName());
-        admin.setEmail(req.getEmail());
-        admin.setRole(Role.ADMIN); // 기본 ADMIN 권한 부여, 추후 설정 가능
+        // 정적 팩토리 메서드를 통한 객체 생성
+        Admin admin = Admin.createAdmin(
+            request.getUserId(),
+            passwordEncoder.encode(request.getPassword()),
+            request.getName(),
+            request.getEmail(),
+            Role.ADMIN  // 기본 ADMIN 권한 부여, 추후 설정 가능
+        );
 
         adminRepository.save(admin);
 
@@ -99,10 +95,24 @@ public class AdminService {
     }
 
     // id로 관리자 찾는 메서드
-    private Admin getAdminById(Long userId) {
-        return adminRepository.findById(userId).orElseThrow(
+    private Admin getAdminById(Long id) {
+        return adminRepository.findById(id).orElseThrow(
             () -> new ApiException(ErrorCode.ADMIN_NOT_FOUND_ERROR)
         );
+    }
+
+    // id로 관리자 찾는 메서드
+    public Admin getAdminByUserId(String userId) {
+        return adminRepository.findByUserId(userId).orElseThrow(
+            () -> new ApiException(ErrorCode.ADMIN_NOT_FOUND_ERROR)
+        );
+    }
+
+    // 관리자의 Role(MASTER, ADMIN) & 본인 검증 메서드
+    private static void RoleAndSameUserVerification(String currentUserId, Admin currentAdmin, Admin admin) {
+        if (currentAdmin.getRole() != Role.MASTER && !admin.getUserId().equals(currentUserId)) {
+            throw new ApiException(ErrorCode.ADMIN_ACCESS_DENIED);
+        }
     }
 
 }

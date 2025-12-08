@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "admins")
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  // 접근 제어 PROTECTED 레벨 유지
 public class Admin extends BaseEntity {
 
     @Id
@@ -39,20 +39,15 @@ public class Admin extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public void setRole(Role role) {
-        this.role = role;
+    // 정적 팩토리 메서드로 관리자 생성
+    public static Admin createAdmin(String userId, String encodedPassword, String name, String email, Role role) {
+        Admin admin = new Admin();
+        admin.userId = userId;
+        admin.password = encodedPassword;
+        admin.name = name;
+        admin.email = email;
+        admin.role = role;
+        return admin;
     }
 
     // 관리자 비밀번호 수정 메서드
