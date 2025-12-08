@@ -44,12 +44,15 @@ public class Room {
     private List<Reservation> reservations = new ArrayList<>();
 
 
-    @Builder
-    public Room(String roomName, Integer location, Integer capacity, String description) {
+
+    private Room(String roomName, Integer location, Integer capacity, String description) {
         this.roomName = roomName;
         this.location = location;
         this.capacity = capacity;
         this.description = description;
+    }
+    public static Room of(RoomReqDto roomReqDto){
+        return new Room(roomReqDto.getRoomName(),roomReqDto.getLocation(),roomReqDto.getCapacity(),roomReqDto.getDescription());
     }
 
     public void update(RoomReqDto roomReqDto) {
@@ -57,6 +60,11 @@ public class Room {
         this.location = roomReqDto.getLocation();
         this.capacity = roomReqDto.getCapacity();
         this.description = roomReqDto.getDescription();
+    }
+
+    public boolean existsRoom(RoomReqDto resDto){
+        return roomName.equals(resDto.getRoomName());
+
     }
 
 

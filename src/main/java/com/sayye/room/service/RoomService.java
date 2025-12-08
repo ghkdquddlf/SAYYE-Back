@@ -25,8 +25,8 @@ public class RoomService {
         if (roomRepository.existsByRoomName(roomReqDto.getRoomName())) {
             throw new ApiException(ErrorCode.ROOM_NAME_DUPLICATED);
         }
-        Room room = new Room(roomReqDto.getRoomName(), roomReqDto.getLocation(),
-            roomReqDto.getCapacity(), roomReqDto.getDescription());
+        Room room = Room.of(roomReqDto);
+
 
         Room saved = roomRepository.save(room);
 
@@ -70,7 +70,7 @@ public class RoomService {
 
         // 중복된 회의실 이름인지 확인
         // 이름의 변경이 감지되었을 때만 if문이 실행되도록 로직 구성
-        if (!room.getRoomName().equals(roomReqDto.getRoomName())
+        if (!room.existsRoom(roomReqDto)
                 && roomRepository.existsByRoomName(roomReqDto.getRoomName())) {
             throw new ApiException(ErrorCode.ROOM_NAME_DUPLICATED);
         }
