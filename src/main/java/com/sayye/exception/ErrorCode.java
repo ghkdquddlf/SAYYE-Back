@@ -14,7 +14,7 @@ public enum ErrorCode {
 
 
     // 클래스
-
+    CLASS_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 클래스입니다."),
 
 
     // 회의실
