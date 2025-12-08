@@ -1,11 +1,10 @@
 package com.sayye.admin.controller;
 
+import com.sayye.admin.config.JwtProvider;
 import com.sayye.admin.dto.request.LoginRequest;
 import com.sayye.admin.dto.request.RefreshTokenRequest;
 import com.sayye.admin.dto.request.SignupRequest;
 import com.sayye.admin.dto.response.AdminResponse;
-import com.sayye.admin.dto.response.LoginResponse;
-import com.sayye.admin.dto.response.LogoutResponse;
 import com.sayye.admin.service.AuthService.TokenPair;
 import com.sayye.admin.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -33,23 +32,23 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(
+    public ResponseEntity<String> login(
         @Valid @RequestBody LoginRequest loginRequest
     ) {
         TokenPair tokens = authService.login(loginRequest);
-        
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + tokens.getAccessToken());
-        headers.set("Refresh-Token", tokens.getRefreshToken());
-        
+
+        HttpHeaders headers = getHttpHeaders(tokens);
+
         return ResponseEntity.ok()
                 .headers(headers)
-                .build();
+                .body("로그인에 성공하였습니다.");
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<LogoutResponse> logout(HttpServletRequest request) {
-        return ResponseEntity.ok(authService.logout(request));
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        authService.logout(request);
+        return ResponseEntity.ok()
+                .body("성공적으로 로그아웃 되었습니다.");
     }
 
     @PostMapping("/refresh")
@@ -58,14 +57,20 @@ public class AuthController {
         @Valid @RequestBody RefreshTokenRequest request
     ) {
         TokenPair tokens = authService.refresh(httpRequest, request);
-        
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + tokens.getAccessToken());
-        headers.set("Refresh-Token", tokens.getRefreshToken());
-        
+
+        HttpHeaders headers = getHttpHeaders(tokens);
+
         return ResponseEntity.ok()
                 .headers(headers)
                 .build();
+    }
+
+    // HTTP Headers 가져오는 메서드
+    private static HttpHeaders getHttpHeaders(TokenPair tokens) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(JwtProvider.AUTHORIZATION_HEADER, JwtProvider.BEARER_PREFIX + tokens.getAccessToken());
+        headers.set("Refresh-Token", tokens.getRefreshToken());
+        return headers;
     }
 
 }

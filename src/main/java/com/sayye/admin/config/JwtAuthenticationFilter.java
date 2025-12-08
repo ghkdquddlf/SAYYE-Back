@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,28 +17,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtProvider jwtProvider;
 
-    public JwtAuthenticationFilter(JwtProvider jwtProvider) {
-        this.jwtProvider = jwtProvider;
-    }
+    private final JwtProvider jwtProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        
-        // /admin/auth/** 경로는 필터 통과
+
+        // /auth/** 경로는 필터 통과
         String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/admin/auth/")) {
+        if (requestURI.startsWith("/auth/")) {
             chain.doFilter(request, response);
             return;
         }
-        
-        String header = request.getHeader("Authorization");
 
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
+        String header = request.getHeader(JwtProvider.AUTHORIZATION_HEADER);
+
+        if (header != null && header.startsWith(JwtProvider.BEARER_PREFIX)) {
+            String token = header.substring(JwtProvider.BEARER_PREFIX.length());
 
             if (jwtProvider.validateToken(token)) {
                 Claims claims = jwtProvider.getClaims(token);

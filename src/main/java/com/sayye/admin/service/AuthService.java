@@ -5,9 +5,7 @@ import com.sayye.admin.dto.request.LoginRequest;
 import com.sayye.admin.dto.request.RefreshTokenRequest;
 import com.sayye.admin.dto.request.SignupRequest;
 import com.sayye.admin.dto.response.AdminResponse;
-import com.sayye.admin.dto.response.LogoutResponse;
 import com.sayye.admin.entity.Admin;
-import com.sayye.admin.repository.AdminRepository;
 import com.sayye.exception.ApiException;
 import com.sayye.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
@@ -21,15 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final AdminService adminService;
 
     @Transactional
     public TokenPair login(LoginRequest loginRequest) {
-        Admin admin = adminRepository.findByUserId(loginRequest.getUserId())
-                .orElseThrow(() -> new ApiException(ErrorCode.ADMIN_NOT_FOUND_ERROR));
+        Admin admin = adminService.getAdminByUserId(loginRequest.getUserId());
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), admin.getPassword())) {
             throw new ApiException(ErrorCode.ADMIN_LOGIN_PASSWORD_INCORRECT);
@@ -42,7 +38,7 @@ public class AuthService {
     }
 
     @Transactional
-    public LogoutResponse logout(HttpServletRequest request) {
+    public void logout(HttpServletRequest request) {
         // Authorization 헤더에서 accessToken 추출
         String accessToken = extractAccessToken(request);
         
@@ -63,8 +59,6 @@ public class AuthService {
 
         // 토큰을 블랙리스트에 추가하여 무효화
         jwtProvider.invalidateToken(accessToken);
-
-        return new LogoutResponse("성공적으로 로그아웃 되었습니다.");
     }
 
     @Transactional
@@ -90,8 +84,7 @@ public class AuthService {
         }
 
         String userId = jwtProvider.getClaims(refreshToken).getSubject();
-        Admin admin = adminRepository.findByUserId(userId)
-                .orElseThrow(() -> new ApiException(ErrorCode.ADMIN_NOT_FOUND_ERROR));
+        Admin admin = adminService.getAdminByUserId(userId);
 
         // 새로운 토큰 발급
         String accessToken = jwtProvider.generateAccessToken(admin.getUserId(), admin.getRole().name());
@@ -112,6 +105,7 @@ public class AuthService {
                     if ("access".equals(claims.get("type", String.class))) {
                         jwtProvider.invalidateToken(oldAccessToken);
                     }
+
                 } catch (Exception e) {
                     // 파싱 실패 시 무시 (잘못된 토큰)
                 }
@@ -148,11 +142,13 @@ public class AuthService {
     
     // Authorization 헤더에서 accessToken 추출하는 private 메서드
     private String extractAccessToken(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7);
+        String authHeader = request.getHeader(JwtProvider.AUTHORIZATION_HEADER);
+
+        if (authHeader != null && authHeader.startsWith(JwtProvider.BEARER_PREFIX)) {
+            return authHeader.substring(JwtProvider.BEARER_PREFIX.length());
         }
+
         return null;
     }
-}
 
+}
