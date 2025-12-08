@@ -1,9 +1,10 @@
 package com.sayye.reservation.controller;
 
-import com.sayye.reservation.dto.CancelReservationReqDto;
-import com.sayye.reservation.dto.ReservationAdminResDto;
-import com.sayye.reservation.dto.ReservationReqDto;
-import com.sayye.reservation.dto.ReservationResDto;
+import com.sayye.reservation.dto.request.CancelReservationReqDto;
+import com.sayye.reservation.dto.request.ReservationReqDto;
+import com.sayye.reservation.dto.request.UpdateReservationReqDto;
+import com.sayye.reservation.dto.response.ReservationAdminResDto;
+import com.sayye.reservation.dto.response.ReservationResDto;
 import com.sayye.reservation.service.ReservationService;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,8 +32,7 @@ public class ReservationController {
 
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId,
-        @Valid @RequestBody
-        CancelReservationReqDto reqDto) {
+        @Valid @RequestBody CancelReservationReqDto reqDto) {
         reservationService.cancelReservation(reservationId, reqDto);
         return ResponseEntity.noContent().build();
     }
@@ -58,7 +59,16 @@ public class ReservationController {
     @GetMapping("/{roomId}")
     public ResponseEntity<List<ReservationResDto>> getReservationsByRoomId(
         @PathVariable Long roomId, @RequestParam LocalDate reservationDate) {
-        return ResponseEntity.ok(reservationService.getReservationsByRoomId(roomId, reservationDate));
+        return ResponseEntity.ok(
+            reservationService.getReservationsByRoomId(roomId, reservationDate));
     }
+
+    @PatchMapping("/{reservationId}")
+    public ResponseEntity<ReservationResDto> updateReservation(@PathVariable Long reservationId,
+        @Valid @RequestBody UpdateReservationReqDto reqDto) {
+        return ResponseEntity.ok(reservationService.updateReservation(reservationId, reqDto));
+    }
+
+
 }
 
