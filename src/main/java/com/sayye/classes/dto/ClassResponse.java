@@ -20,7 +20,7 @@ public class ClassResponse {
     public static ClassResponse from(Class classEntity) {
         return ClassResponse.builder()
             .id(classEntity.getId())
-            .name(classEntity.getName())
+            .name(classEntity.getClassName())
             .startDate(classEntity.getStartDate())
             .endDate(classEntity.getEndDate())
             .build();
