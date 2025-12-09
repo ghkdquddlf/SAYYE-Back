@@ -87,14 +87,23 @@ public class Reservation extends BaseEntity {
             .build();
     }
 
+    public void updateReservationTime(LocalTime startTime, LocalTime endTime, LocalDate reservationDate) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.reservationDate = reservationDate;
+    }
+
     public boolean isOwner(String userName, String phoneLastNumber) {
         return this.userName.equals(userName) && this.phoneLastNumber.equals(phoneLastNumber);
     }
 
-    // Todo 파라미터 시간
-    public boolean isCancelable() {
+    public boolean isModifiable(LocalDateTime now) {
         LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, startTime);
         // 현재 시간이 예약 시작 시간보다 1시간 전인지
-        return LocalDateTime.now().isBefore(reservationDateTime.minusHours(1));
+        return now.isBefore(reservationDateTime.minusHours(1));
+    }
+
+    public boolean isDateChanged(LocalDate newDate) {
+        return !this.reservationDate.equals(newDate);
     }
 }

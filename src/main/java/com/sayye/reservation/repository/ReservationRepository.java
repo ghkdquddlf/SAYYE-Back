@@ -31,10 +31,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             and r.reservationDate = :date
             and r.status <> :cancelledStatus
             and (r.startTime < :endTime and r.endTime > :startTime)
+            and (:excludeId is null or r.id <> :roomId)
         """)
     Long existsOverlap(@Param("roomId") Long roomId, @Param("date") LocalDate date,
         @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime,
-        @Param("cancelledStatus") ReservationStatus cancelledStatus);
+        @Param("cancelledStatus") ReservationStatus cancelledStatus,
+        @Param("excludeId") Long excludeId);
 
     List<Reservation> findAllByRoomIdAndReservationDateAndStatusNotOrderByStartTimeAsc(Long roomId,
         LocalDate date, ReservationStatus status);
