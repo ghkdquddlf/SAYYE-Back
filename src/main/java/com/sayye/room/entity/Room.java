@@ -1,7 +1,7 @@
 package com.sayye.room.entity;
 
 import com.sayye.baseEntity.BaseEntity;
-import com.sayye.reservation.entity.Reservation;
+//import com.sayye.reservation.entity.Reservation;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,8 +37,5 @@ public class Room extends BaseEntity {
     private Integer capacity;
 
     private String description;
-
-    @OneToMany(mappedBy = "room")
-    private List<Reservation> reservations = new ArrayList<>();
 
 }
