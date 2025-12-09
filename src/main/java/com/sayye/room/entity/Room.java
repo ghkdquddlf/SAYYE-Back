@@ -45,7 +45,6 @@ public class Room extends BaseEntity {
     private List<Reservation> reservations = new ArrayList<>();
 
 
-
     private Room(String roomName, Integer location, Integer capacity, String description) {
         this.roomName = roomName;
         this.location = location;
