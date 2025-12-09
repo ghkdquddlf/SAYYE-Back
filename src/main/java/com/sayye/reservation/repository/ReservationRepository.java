@@ -1,6 +1,7 @@
 package com.sayye.reservation.repository;
 
 import com.sayye.reservation.entity.Reservation;
+import com.sayye.reservation.entity.Reservation;
 import com.sayye.reservation.entity.ReservationStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
