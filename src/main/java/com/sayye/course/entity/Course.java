@@ -9,13 +9,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
 @Table(name = "classes")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Course extends BaseEntity {
 
     @Id
@@ -31,4 +35,10 @@ public class Course extends BaseEntity {
     @Column(nullable = false)
     private LocalDate endDate;
 
+    // 코스 정보 수정 메서드
+    public void update(String courseName, LocalDate startDate, LocalDate endDate) {
+        this.courseName = courseName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }

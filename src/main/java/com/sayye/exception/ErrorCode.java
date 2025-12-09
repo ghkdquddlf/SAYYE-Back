@@ -29,9 +29,9 @@ public enum ErrorCode {
     TOKEN_ALREADY_LOGGED_OUT(HttpStatus.BAD_REQUEST, "이미 사용 완료된 토큰입니다."),
     TOKEN_TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "토큰 타입이 일치하지 않습니다."),
 
-
-    // 클래스
-
+    // 코스
+    COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 코스입니다."),
+    COURSE_NAME_DUPLICATED(HttpStatus.CONFLICT, "이미 존재하는 코스 이름입니다."),
 
 
     // 회의실

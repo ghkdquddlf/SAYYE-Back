@@ -15,12 +15,11 @@ import jakarta.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
+@Entity
 @Table(name = "rooms")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Room extends BaseEntity {
@@ -44,7 +43,6 @@ public class Room extends BaseEntity {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
 
-
     private Room(String roomName, Integer location, Integer capacity, String description) {
         this.roomName = roomName;
         this.location = location;
@@ -66,6 +64,4 @@ public class Room extends BaseEntity {
         return roomName.equals(resDto.getRoomName());
 
     }
-
-
 }

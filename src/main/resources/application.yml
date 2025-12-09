@@ -21,6 +21,3 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     defer-datasource-initialization: true
-
-jwt:
-  secret: ${JWT_SECRET:sayyeSecretKeyForJWTTokenGenerationMustBeAtLeast32BytesLong}
