@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -21,13 +22,31 @@ public class GlobalExceptionHandler {
     private static final String MISSING_PARAM_MESSAGE = "필수 파라미터가 누락되었습니다.";
 
     @ExceptionHandler(ApiException.class)
-    public ResponseEntity<String> handleCustomException(ApiException e) {
+    public ResponseEntity<Map<String, Object>> handleCustomException(ApiException e) {
         ErrorCode errorCode = e.getErrorCode();
         log.warn("handleCustomException: {}", errorCode, e);
 
+        Map<String, Object> body = Map.of(
+            "message", errorCode.getMessage()
+        );
+
         return ResponseEntity
             .status(errorCode.getStatus())
-            .body(errorCode.getMessage());
+            .body(body);
+    }
+    
+    // Spring Security 권한 에러 처리
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDeniedException(AccessDeniedException e) {
+        log.warn("handleAccessDeniedException: {}", e.getMessage());
+
+        Map<String, Object> body = Map.of(
+            "message", "접근 권한이 없습니다."
+        );
+
+        return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
+            .body(body);
     }
 
     // DTO Validation 예외
