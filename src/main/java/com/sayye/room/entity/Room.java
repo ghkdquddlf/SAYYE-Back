@@ -2,6 +2,8 @@ package com.sayye.room.entity;
 
 import com.sayye.baseEntity.BaseEntity;
 import com.sayye.reservation.entity.Reservation;
+import com.sayye.room.dto.request.RoomReqDto;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +28,7 @@ public class Room extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String roomName;
 
     @Column(nullable = false)
@@ -38,7 +40,7 @@ public class Room extends BaseEntity {
 
     private String description;
 
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
 
     private Room(String roomName, Integer location, Integer capacity, String description) {
