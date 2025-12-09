@@ -25,7 +25,7 @@ public class InitialDataLoader implements CommandLineRunner {
         // MASTER 계정이 없으면 생성
         if (adminRepository.findByUserId("master").isEmpty()) {
 
-            Admin master = Admin.createAdmin(
+            Admin master = Admin.of(
                 "master",
                 passwordEncoder.encode("password123"),
                 "마스터관리자",

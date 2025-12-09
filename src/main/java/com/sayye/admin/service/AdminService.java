@@ -38,7 +38,9 @@ public class AdminService {
                 .orElseThrow(() -> new ApiException(ErrorCode.ADMIN_NOT_FOUND_ERROR));
         
         // MASTER는 모든 관리자 조회 가능, ADMIN은 본인만 조회 가능
-        RoleAndSameUserVerification(currentUserId, currentAdmin, admin);
+        if (!currentAdmin.canAccessAdmin(admin.getUserId())) {
+            throw new ApiException(ErrorCode.ADMIN_ACCESS_DENIED);
+        }
 
         return new AdminResponse(admin);
     }
@@ -76,7 +78,7 @@ public class AdminService {
         }
 
         // 정적 팩토리 메서드를 통한 객체 생성
-        Admin admin = Admin.createAdmin(
+        Admin admin = Admin.of(
             request.getUserId(),
             passwordEncoder.encode(request.getPassword()),
             request.getName(),
@@ -106,13 +108,6 @@ public class AdminService {
         return adminRepository.findByUserId(userId).orElseThrow(
             () -> new ApiException(ErrorCode.ADMIN_NOT_FOUND_ERROR)
         );
-    }
-
-    // 관리자의 Role(MASTER, ADMIN) & 본인 검증 메서드
-    private static void RoleAndSameUserVerification(String currentUserId, Admin currentAdmin, Admin admin) {
-        if (currentAdmin.getRole() != Role.MASTER && !admin.getUserId().equals(currentUserId)) {
-            throw new ApiException(ErrorCode.ADMIN_ACCESS_DENIED);
-        }
     }
 
 }
