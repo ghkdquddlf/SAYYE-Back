@@ -1,10 +1,18 @@
 -- =========================
 -- Admin 테이블
 -- =========================
-INSERT INTO admins (admin_id, password, created_at, updated_at)
+-- 초기 데이터는 주석 처리 (회원가입 사용)
+-- 회원가입 후 아래 UPDATE 문으로 MASTER 권한 부여
+
+-- MASTER 계정 생성 방법:
+-- 1. POST /admin/auth/signup 으로 계정 생성 (userId: master, password: password123)
+-- 2. 아래 UPDATE 문의 주석을 제거하고 서버 재시작
+-- UPDATE admins SET role = 'MASTER' WHERE user_id = 'master';
+
+INSERT INTO admins (user_id, password, name, email, role, created_at, updated_at)
 VALUES
-    ('admin01', 'password123', '2025-11-30 09:00:00', '2025-11-30 09:00:00'),
-    ('admin02', 'password456', '2025-11-30 09:05:00', '2025-11-30 09:05:00');
+    ('admin01', '$2a$10$5Gm3EqSqXvELLPkjVDqYHOvT9Y8QqH7TjKfYqVxC7gqF2X9BqJLF.', '관리자1', 'admin01@sesac.com', 'ADMIN', '2025-11-30 09:00:00', '2025-11-30 09:00:00'),
+    ('admin02', '$2a$10$5Gm3EqSqXvELLPkjVDqYHOvT9Y8QqH7TjKfYqVxC7gqF2X9BqJLF.', '관리자2', 'admin02@sesac.com', 'ADMIN', '2025-11-30 09:05:00', '2025-11-30 09:05:00');
 
 -- =========================
 -- Room 테이블

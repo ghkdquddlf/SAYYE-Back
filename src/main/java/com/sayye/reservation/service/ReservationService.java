@@ -5,15 +5,16 @@ import com.sayye.course.repository.CourseRepository;
 import com.sayye.exception.ApiException;
 import com.sayye.exception.ErrorCode;
 import com.sayye.reservation.dto.request.CancelReservationReqDto;
-import com.sayye.reservation.dto.request.ReservationReqDto;
+import com.sayye.reservation.dto.request.ReadReservationReqDto;
 import com.sayye.reservation.dto.request.UpdateReservationReqDto;
 import com.sayye.reservation.dto.response.ReservationAdminResDto;
+import com.sayye.reservation.dto.request.ReservationReqDto;
 import com.sayye.reservation.dto.response.ReservationResDto;
 import com.sayye.reservation.entity.Reservation;
 import com.sayye.reservation.entity.ReservationStatus;
 import com.sayye.reservation.repository.ReservationRepository;
-import com.sayye.room.RoomRepository;
 import com.sayye.room.entity.Room;
+import com.sayye.room.repository.RoomRepository;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -52,12 +53,27 @@ public class ReservationService {
         reservationRepository.delete(reservation);
     }
 
-    public Page<ReservationAdminResDto> getAllReservations(int page) {
+    public Page<ReservationAdminResDto> getAllReservationsForAdmin(int page) {
         Pageable pageable = PageRequest.of(page - 1, DEFAULT_SIZE,
             Sort.by(Direction.DESC, SORT_BY));
 
         return reservationRepository.findAll(pageable).map(ReservationAdminResDto::from);
     }
+
+    public List<ReservationResDto> getAllReservations(ReadReservationReqDto reqDto) {
+        List<Reservation> reservations = reservationRepository.findByUserNameAndPhoneLastNumberOrderByCreatedAtDesc(
+            reqDto.getUserName(), reqDto.getPhoneLastNumber());
+        return reservations.stream().map(ReservationResDto::from).toList();
+    }
+
+    public ReservationResDto getReservationDetail(Long reservationId, ReadReservationReqDto reqDto) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+            .orElseThrow(() -> new ApiException(ErrorCode.RESERVATION_NOT_FOUND));
+
+        validateOwner(reservation, reqDto.getUserName(), reqDto.getPhoneLastNumber());
+        return ReservationResDto.from(reservation);
+    }
+
 
     @Transactional
     public ReservationResDto createReservation(Long roomId, ReservationReqDto reqDto) {

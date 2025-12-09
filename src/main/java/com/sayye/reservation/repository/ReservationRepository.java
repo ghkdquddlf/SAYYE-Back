@@ -1,6 +1,7 @@
 package com.sayye.reservation.repository;
 
 import com.sayye.reservation.entity.Reservation;
+import com.sayye.reservation.entity.Reservation;
 import com.sayye.reservation.entity.ReservationStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -40,4 +41,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findAllByRoomIdAndReservationDateAndStatusNotOrderByStartTimeAsc(Long roomId,
         LocalDate date, ReservationStatus status);
+
+    List<Reservation> findByUserNameAndPhoneLastNumberOrderByCreatedAtDesc(String userName,
+        String phoneLastNumber);
 }
