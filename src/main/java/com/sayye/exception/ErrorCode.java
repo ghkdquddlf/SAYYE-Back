@@ -18,7 +18,8 @@ public enum ErrorCode {
 
 
     // 회의실
-
+    ROOM_NAME_DUPLICATED(HttpStatus.CONFLICT,"이미 존재하는 회의실 이름입니다."),
+    ROOM_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 회의실 입니다." );
 
 
     // 예약
