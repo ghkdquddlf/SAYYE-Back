@@ -1,10 +1,14 @@
 package com.sayye.room.controller;
 
 
+import com.sayye.reservation.dto.request.ReservationReqDto;
+import com.sayye.reservation.dto.response.ReservationResDto;
+import com.sayye.reservation.service.ReservationService;
 import com.sayye.room.dto.request.RoomReqDto;
 import com.sayye.room.dto.response.RoomResDto;
 import com.sayye.room.service.RoomService;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoomController {
 
     private final RoomService roomService;
+    private final ReservationService reservationService;
 
     @PostMapping
     public ResponseEntity<RoomResDto> createRoom(
@@ -65,4 +71,19 @@ public class RoomController {
                    .body(roomService.updateRoom(roomId, roomReqDto));
     }
 
+    // Reservation에서 이동
+    @PostMapping("/{roomId}/reservations")
+    public ResponseEntity<ReservationResDto> createReservation(@PathVariable Long roomId,
+        @Valid @RequestBody ReservationReqDto reqDto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                   .body(reservationService.createReservation(roomId, reqDto));
+    }
+
+    // Reservation에서 이동
+    @GetMapping("/{roomId}/reservations")
+    public ResponseEntity<List<ReservationResDto>> getReservationsByRoomId(
+        @PathVariable Long roomId, @RequestParam LocalDate reservationDate) {
+        return ResponseEntity.ok(
+            reservationService.getReservationsByRoomId(roomId, reservationDate));
+    }
 }
