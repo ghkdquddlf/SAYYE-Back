@@ -6,9 +6,9 @@ import com.sayye.exception.ApiException;
 import com.sayye.exception.ErrorCode;
 import com.sayye.reservation.dto.request.CancelReservationReqDto;
 import com.sayye.reservation.dto.request.ReadReservationReqDto;
-import com.sayye.reservation.dto.request.ReservationReqDto;
 import com.sayye.reservation.dto.request.UpdateReservationReqDto;
 import com.sayye.reservation.dto.response.ReservationAdminResDto;
+import com.sayye.reservation.dto.request.ReservationReqDto;
 import com.sayye.reservation.dto.response.ReservationResDto;
 import com.sayye.reservation.entity.Reservation;
 import com.sayye.reservation.entity.ReservationStatus;
@@ -50,7 +50,7 @@ public class ReservationService {
         validateOwner(reservation, reqDto.getUserName(), reqDto.getPhoneLastNumber());
         validateModifiableTime(reservation);
 
-        reservationRepository.delete(reservation);
+        reservation.cancel();
     }
 
     public Page<ReservationAdminResDto> getAllReservationsForAdmin(int page) {
