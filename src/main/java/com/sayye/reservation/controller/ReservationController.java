@@ -59,21 +59,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.getReservationDetail(reservationId, reqDto));
     }
 
-    // Todo RoomController로 이동 필요할듯 (/rooms/{roomId}/reservations)
-    @PostMapping("/{roomId}")
-    public ResponseEntity<ReservationResDto> createReservation(@PathVariable Long roomId,
-        @Valid @RequestBody ReservationReqDto reqDto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(reservationService.createReservation(roomId, reqDto));
-    }
 
-    // Todo RoomController로 이동 필요할듯 (/rooms/{roomId}/reservations)
-    @GetMapping("/{roomId}")
-    public ResponseEntity<List<ReservationResDto>> getReservationsByRoomId(
-        @PathVariable Long roomId, @RequestParam LocalDate reservationDate) {
-        return ResponseEntity.ok(
-            reservationService.getReservationsByRoomId(roomId, reservationDate));
-    }
 
     @PatchMapping("/{reservationId}")
     public ResponseEntity<ReservationResDto> updateReservation(@PathVariable Long reservationId,
