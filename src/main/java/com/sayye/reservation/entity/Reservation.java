@@ -93,6 +93,10 @@ public class Reservation extends BaseEntity {
         this.reservationDate = reservationDate;
     }
 
+    public void cancel() {
+        this.status = ReservationStatus.CANCELED;
+    }
+
     public boolean isOwner(String userName, String phoneLastNumber) {
         return this.userName.equals(userName) && this.phoneLastNumber.equals(phoneLastNumber);
     }

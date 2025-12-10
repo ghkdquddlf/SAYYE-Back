@@ -50,7 +50,7 @@ public class ReservationService {
         validateOwner(reservation, reqDto.getUserName(), reqDto.getPhoneLastNumber());
         validateModifiableTime(reservation);
 
-        reservationRepository.delete(reservation);
+        reservation.cancel();
     }
 
     public Page<ReservationAdminResDto> getAllReservationsForAdmin(int page) {
