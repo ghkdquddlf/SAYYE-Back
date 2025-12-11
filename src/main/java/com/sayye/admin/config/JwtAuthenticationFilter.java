@@ -26,8 +26,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        // /auth/** 경로는 필터 통과
         String requestURI = request.getRequestURI();
+        
+        // /auth/** 경로는 항상 인증 없이 통과
         if (requestURI.startsWith("/auth/")) {
             chain.doFilter(request, response);
             return;
@@ -35,6 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String header = request.getHeader(JwtProvider.AUTHORIZATION_HEADER);
 
+        // 토큰이 있으면 검증하고 인증 정보 설정
         if (header != null && header.startsWith(JwtProvider.BEARER_PREFIX)) {
             String token = header.substring(JwtProvider.BEARER_PREFIX.length());
 
@@ -56,20 +58,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 
                 chain.doFilter(request, response);
                 return;
+            } else {
+                // 토큰이 있지만 유효하지 않은 경우 401 응답
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json;charset=UTF-8");
+                
+                Map<String, String> errorResponse = Map.of(
+                    "message", "유효하지 않은 토큰입니다."
+                );
+                
+                ObjectMapper objectMapper = new ObjectMapper();
+                String jsonResponse = objectMapper.writeValueAsString(errorResponse);
+                response.getWriter().write(jsonResponse);
+                return;
             }
         }
 
-        // 토큰이 없거나 유효하지 않으면 401 응답
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType("application/json;charset=UTF-8");
-        
-        Map<String, String> errorResponse = Map.of(
-            "message", "유효하지 않은 토큰입니다."
-        );
-        
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonResponse = objectMapper.writeValueAsString(errorResponse);
-        response.getWriter().write(jsonResponse);
+        // 토큰이 없는 경우: 다음 필터로 진행 (SecurityConfig에서 권한 확인)
+        chain.doFilter(request, response);
     }
 
 }
