@@ -48,7 +48,7 @@ public class SecurityConfig {
                 
                 // 방/강좌 API - 조회만 공개, 수정은 관리자만
                 .requestMatchers(HttpMethod.GET, "/rooms/**").permitAll()  // 조회: 누구나
-                .requestMatchers(HttpMethod.GET, "/courses/**").permitAll()  // 조회: 누구나
+                .requestMatchers(HttpMethod.GET, "/classes/**").permitAll()  // 조회: 누구나
                 .requestMatchers("/rooms/**").authenticated()  // 방 CRUD: 관리자만
                 .requestMatchers("/courses/**").authenticated()  // 강좌 CRUD: 관리자만
                 
