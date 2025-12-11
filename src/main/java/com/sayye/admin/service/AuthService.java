@@ -24,11 +24,17 @@ public class AuthService {
     private final AdminService adminService;
 
     @Transactional
-    public TokenPair login(LoginRequest loginRequest) {
+    public TokenPair login(LoginRequest loginRequest, HttpServletRequest request) {
         Admin admin = adminService.getAdminByUserId(loginRequest.getUserId());
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), admin.getPassword())) {
             throw new ApiException(ErrorCode.ADMIN_LOGIN_PASSWORD_INCORRECT);
+        }
+
+        // 기존 토큰이 있다면 무효화 (단일 세션 유지)
+        String oldAccessToken = extractAccessToken(request);
+        if (oldAccessToken != null && jwtProvider.validateToken(oldAccessToken)) {
+            jwtProvider.invalidateToken(oldAccessToken);
         }
 
         String accessToken = jwtProvider.generateAccessToken(admin.getUserId(), admin.getRole().name());

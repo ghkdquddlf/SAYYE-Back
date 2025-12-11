@@ -33,9 +33,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(
-        @Valid @RequestBody LoginRequest loginRequest
+        @Valid @RequestBody LoginRequest loginRequest,
+        HttpServletRequest request
     ) {
-        TokenPair tokens = authService.login(loginRequest);
+        TokenPair tokens = authService.login(loginRequest, request);
 
         HttpHeaders headers = getHttpHeaders(tokens);
 
