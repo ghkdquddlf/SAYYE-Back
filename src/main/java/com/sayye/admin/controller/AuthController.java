@@ -6,6 +6,7 @@ import com.sayye.admin.dto.request.RefreshTokenRequest;
 import com.sayye.admin.dto.request.SignupRequest;
 import com.sayye.admin.dto.response.AdminResponse;
 import com.sayye.admin.service.AuthService.TokenPair;
+import com.sayye.admin.service.AuthService.LoginResult;
 import com.sayye.admin.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,17 +35,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(
+    public ResponseEntity<Map<String, String>> login(
         @Valid @RequestBody LoginRequest loginRequest,
         HttpServletRequest request
     ) {
-        TokenPair tokens = authService.login(loginRequest, request);
+        LoginResult loginResult = authService.login(loginRequest, request);
 
-        HttpHeaders headers = getHttpHeaders(tokens);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(JwtProvider.AUTHORIZATION_HEADER, JwtProvider.BEARER_PREFIX + loginResult.getAccessToken());
+        headers.set("Refresh-Token", loginResult.getRefreshToken());
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .body("로그인에 성공하였습니다.");
+                .body(Map.of("role", loginResult.getRole()));
     }
 
     @PostMapping("/logout")

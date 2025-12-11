@@ -24,7 +24,7 @@ public class AuthService {
     private final AdminService adminService;
 
     @Transactional
-    public TokenPair login(LoginRequest loginRequest, HttpServletRequest request) {
+    public LoginResult login(LoginRequest loginRequest, HttpServletRequest request) {
         Admin admin = adminService.getAdminByUserId(loginRequest.getUserId());
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), admin.getPassword())) {
@@ -40,7 +40,7 @@ public class AuthService {
         String accessToken = jwtProvider.generateAccessToken(admin.getUserId(), admin.getRole().name());
         String refreshToken = jwtProvider.generateRefreshToken(admin.getUserId());
 
-        return new TokenPair(accessToken, refreshToken);
+        return new LoginResult(accessToken, refreshToken, admin.getRole().name());
     }
 
     @Transactional
@@ -138,6 +138,32 @@ public class AuthService {
 
         public String getRefreshToken() {
             return refreshToken;
+        }
+    }
+
+    // login 메서드에서 사용할 내부 클래스 (토큰 + role 정보)
+    public static class LoginResult {
+
+        private final String accessToken;
+        private final String refreshToken;
+        private final String role;
+
+        public LoginResult(String accessToken, String refreshToken, String role) {
+            this.accessToken = accessToken;
+            this.refreshToken = refreshToken;
+            this.role = role;
+        }
+
+        public String getAccessToken() {
+            return accessToken;
+        }
+
+        public String getRefreshToken() {
+            return refreshToken;
+        }
+
+        public String getRole() {
+            return role;
         }
     }
 
