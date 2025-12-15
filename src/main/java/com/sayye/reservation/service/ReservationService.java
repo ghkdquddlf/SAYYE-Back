@@ -4,11 +4,12 @@ import com.sayye.course.entity.Course;
 import com.sayye.course.repository.CourseRepository;
 import com.sayye.exception.ApiException;
 import com.sayye.exception.ErrorCode;
+import com.sayye.reservation.dto.request.BlockReqDto;
 import com.sayye.reservation.dto.request.CancelReservationReqDto;
 import com.sayye.reservation.dto.request.ReadReservationReqDto;
+import com.sayye.reservation.dto.request.ReservationReqDto;
 import com.sayye.reservation.dto.request.UpdateReservationReqDto;
 import com.sayye.reservation.dto.response.ReservationAdminResDto;
-import com.sayye.reservation.dto.request.ReservationReqDto;
 import com.sayye.reservation.dto.response.ReservationResDto;
 import com.sayye.reservation.entity.Reservation;
 import com.sayye.reservation.entity.ReservationStatus;
@@ -66,7 +67,8 @@ public class ReservationService {
         return reservations.stream().map(ReservationResDto::from).toList();
     }
 
-    public ReservationResDto getReservationDetail(Long reservationId, ReadReservationReqDto reqDto) {
+    public ReservationResDto getReservationDetail(Long reservationId,
+        ReadReservationReqDto reqDto) {
         Reservation reservation = reservationRepository.findById(reservationId)
             .orElseThrow(() -> new ApiException(ErrorCode.RESERVATION_NOT_FOUND));
 
@@ -136,6 +138,21 @@ public class ReservationService {
             reqDto.getReservationDate());
 
         return ReservationResDto.from(reservation);
+    }
+
+    @Transactional
+    public ReservationResDto blockRoomTime(Long roomId, BlockReqDto reqDto,
+        String adminId) {
+        // Todo 회의실 존재 여부 검증
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException());
+
+        // 이미 예약되어 있는 시간인지
+        validateOverlap(room.getId(), reqDto.getReservationDate(), reqDto.getStartTime(),
+            reqDto.getEndTime(), null);
+
+        Reservation saved = reservationRepository.save(reqDto.toEntity(room, adminId));
+
+        return ReservationResDto.from(saved);
     }
 
     private Reservation findReservation(Long reservationId) {
