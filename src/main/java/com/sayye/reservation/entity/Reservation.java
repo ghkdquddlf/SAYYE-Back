@@ -33,7 +33,7 @@ public class Reservation extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "classes_id", nullable = false)
+    @JoinColumn(name = "classes_id")
     private Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,7 +43,7 @@ public class Reservation extends BaseEntity {
     @Column(nullable = false)
     private String userName;
 
-    @Column(nullable = false)
+    @Column
     private String phoneLastNumber;
 
     @Enumerated(EnumType.STRING)
@@ -82,6 +82,17 @@ public class Reservation extends BaseEntity {
             .phoneLastNumber(phoneLastNumber)
             .startTime(startTime)
             .status(ReservationStatus.RESERVED)
+            .endTime(endTime)
+            .reservationDate(reservationDate)
+            .build();
+    }
+
+    public static Reservation block(Room room, String userName, LocalTime startTime, LocalTime endTime, LocalDate reservationDate) {
+        return Reservation.builder()
+            .room(room)
+            .userName(userName)
+            .startTime(startTime)
+            .status(ReservationStatus.UNAVAILABLE)
             .endTime(endTime)
             .reservationDate(reservationDate)
             .build();
