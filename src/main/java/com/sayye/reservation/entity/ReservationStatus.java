@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum ReservationStatus {
     RESERVED("예약"),
     CANCELED("취소"), // 취소됨
+    UNAVAILABLE("예약 불가"), // 예약 불가
     FINISHED("완료");  // 사용 완료
 
     private final String description;
