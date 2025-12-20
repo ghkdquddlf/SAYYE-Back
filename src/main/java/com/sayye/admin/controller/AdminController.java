@@ -3,19 +3,24 @@ package com.sayye.admin.controller;
 import com.sayye.admin.dto.request.UpdatePasswordRequest;
 import com.sayye.admin.dto.response.AdminResponse;
 import com.sayye.admin.service.AdminService;
+import com.sayye.reservation.dto.request.AdminReservationReqDto;
+import com.sayye.reservation.dto.response.ReservationResDto;
+import com.sayye.reservation.service.AdminReservationService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +28,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 public class AdminController {
 
     private final AdminService adminService;
+    private final AdminReservationService adminReservationService;
 
     // 관리자 전체 조회 - MASTER만 가능
     @PreAuthorize("hasRole('MASTER')")
@@ -60,6 +66,13 @@ public class AdminController {
     ) {
         adminService.delete(userId);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/rooms/{roomId}/reservations")
+    public ResponseEntity<ReservationResDto> createAdminReservation(@PathVariable Long roomId,
+        @Valid @RequestBody AdminReservationReqDto reqDto, Authentication authentication) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(adminReservationService.createAdminReservation(roomId, reqDto, authentication.getName()));
     }
 
 }

@@ -33,7 +33,7 @@ public class Reservation extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "classes_id", nullable = false)
+    @JoinColumn(name = "classes_id")
     private Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,7 +43,7 @@ public class Reservation extends BaseEntity {
     @Column(nullable = false)
     private String userName;
 
-    @Column(nullable = false)
+    @Column
     private String phoneLastNumber;
 
     @Enumerated(EnumType.STRING)
@@ -87,6 +87,17 @@ public class Reservation extends BaseEntity {
             .build();
     }
 
+    public static Reservation createByAdmin(Room room, String userName, LocalTime startTime, LocalTime endTime, LocalDate reservationDate) {
+        return Reservation.builder()
+            .room(room)
+            .userName(userName)
+            .startTime(startTime)
+            .status(ReservationStatus.UNAVAILABLE)
+            .endTime(endTime)
+            .reservationDate(reservationDate)
+            .build();
+    }
+
     public void updateReservationTime(LocalTime startTime, LocalTime endTime, LocalDate reservationDate) {
         this.startTime = startTime;
         this.endTime = endTime;
@@ -95,6 +106,10 @@ public class Reservation extends BaseEntity {
 
     public void cancel() {
         this.status = ReservationStatus.CANCELED;
+    }
+
+    public void cancelByAdmin() {
+        this.status = ReservationStatus.CANCELLED_BY_ADMIN;
     }
 
     public boolean isOwner(String userName, String phoneLastNumber) {

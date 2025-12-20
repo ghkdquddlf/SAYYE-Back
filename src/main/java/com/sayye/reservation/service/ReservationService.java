@@ -4,11 +4,12 @@ import com.sayye.course.entity.Course;
 import com.sayye.course.repository.CourseRepository;
 import com.sayye.exception.ApiException;
 import com.sayye.exception.ErrorCode;
+import com.sayye.reservation.dto.request.AdminReservationReqDto;
 import com.sayye.reservation.dto.request.CancelReservationReqDto;
 import com.sayye.reservation.dto.request.ReadReservationReqDto;
+import com.sayye.reservation.dto.request.ReservationReqDto;
 import com.sayye.reservation.dto.request.UpdateReservationReqDto;
 import com.sayye.reservation.dto.response.ReservationAdminResDto;
-import com.sayye.reservation.dto.request.ReservationReqDto;
 import com.sayye.reservation.dto.response.ReservationResDto;
 import com.sayye.reservation.entity.Reservation;
 import com.sayye.reservation.entity.ReservationStatus;
@@ -66,7 +67,8 @@ public class ReservationService {
         return reservations.stream().map(ReservationResDto::from).toList();
     }
 
-    public ReservationResDto getReservationDetail(Long reservationId, ReadReservationReqDto reqDto) {
+    public ReservationResDto getReservationDetail(Long reservationId,
+        ReadReservationReqDto reqDto) {
         Reservation reservation = reservationRepository.findById(reservationId)
             .orElseThrow(() -> new ApiException(ErrorCode.RESERVATION_NOT_FOUND));
 
@@ -77,6 +79,10 @@ public class ReservationService {
 
     @Transactional
     public ReservationResDto createReservation(Long roomId, ReservationReqDto reqDto) {
+
+        // 현재 시간이 10시 전이면
+        validateBookingAvailableTime();
+
         // 예약 시작 시간이 10시 전이면
         validateReservationTime(reqDto.getStartTime(), reqDto.getEndTime());
 
@@ -190,6 +196,12 @@ public class ReservationService {
         long durationMinutes = Duration.between(startTime, endTime).toMinutes();
         if (durationMinutes > 120) {
             throw new ApiException(ErrorCode.RESERVATION_EXCEED_MAX_DURATION);
+        }
+    }
+
+    private void validateBookingAvailableTime() {
+        if (LocalTime.now().isBefore(LocalTime.of(10, 0))) {
+            throw new ApiException(ErrorCode.RESERVATION_SYSTEM_NOT_OPEN_YET);
         }
     }
 }

@@ -68,7 +68,7 @@ public class RoomController {
     ) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                   .body(roomService.updateRoom(roomId, roomReqDto));
+            .body(roomService.updateRoom(roomId, roomReqDto));
     }
 
     // Reservation에서 이동
@@ -76,7 +76,7 @@ public class RoomController {
     public ResponseEntity<ReservationResDto> createReservation(@PathVariable Long roomId,
         @Valid @RequestBody ReservationReqDto reqDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                   .body(reservationService.createReservation(roomId, reqDto));
+            .body(reservationService.createReservation(roomId, reqDto));
     }
 
     // Reservation에서 이동
@@ -86,4 +86,5 @@ public class RoomController {
         return ResponseEntity.ok(
             reservationService.getReservationsByRoomId(roomId, reservationDate));
     }
+
 }
