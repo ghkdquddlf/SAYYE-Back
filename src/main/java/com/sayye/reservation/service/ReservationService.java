@@ -79,6 +79,10 @@ public class ReservationService {
 
     @Transactional
     public ReservationResDto createReservation(Long roomId, ReservationReqDto reqDto) {
+
+        // 현재 시간이 10시 전이면
+        validateBookingAvailableTime();
+
         // 예약 시작 시간이 10시 전이면
         validateReservationTime(reqDto.getStartTime(), reqDto.getEndTime());
 
@@ -192,6 +196,12 @@ public class ReservationService {
         long durationMinutes = Duration.between(startTime, endTime).toMinutes();
         if (durationMinutes > 120) {
             throw new ApiException(ErrorCode.RESERVATION_EXCEED_MAX_DURATION);
+        }
+    }
+
+    private void validateBookingAvailableTime() {
+        if (LocalTime.now().isBefore(LocalTime.of(10, 0))) {
+            throw new ApiException(ErrorCode.RESERVATION_SYSTEM_NOT_OPEN_YET);
         }
     }
 }
