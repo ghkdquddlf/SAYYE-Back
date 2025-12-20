@@ -10,7 +10,7 @@ import java.time.LocalTime;
 import lombok.Getter;
 
 @Getter
-public class BlockReqDto {
+public class AdminReservationReqDto {
 
     @NotNull(message = "예약 시작 시간은 필수입니다.")
     private LocalTime startTime;
@@ -48,7 +48,7 @@ public class BlockReqDto {
     }
 
     public Reservation toEntity(Room room, String adminId) {
-        return Reservation.block(room, adminId, startTime, endTime, reservationDate);
+        return Reservation.createByAdmin(room, adminId, startTime, endTime, reservationDate);
     }
 
 }
