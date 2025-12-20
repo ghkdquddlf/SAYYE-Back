@@ -69,7 +69,7 @@ public class AdminController {
     }
 
     @PostMapping("/rooms/{roomId}/reservations")
-    public ResponseEntity<ReservationResDto> blockRoomTime(@PathVariable Long roomId,
+    public ResponseEntity<ReservationResDto> createAdminReservation(@PathVariable Long roomId,
         @Valid @RequestBody AdminReservationReqDto reqDto, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(adminReservationService.createAdminReservation(roomId, reqDto, authentication.getName()));
