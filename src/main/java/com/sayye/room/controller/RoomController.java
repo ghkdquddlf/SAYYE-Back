@@ -1,7 +1,6 @@
 package com.sayye.room.controller;
 
 
-import com.sayye.reservation.dto.request.BlockReqDto;
 import com.sayye.reservation.dto.request.ReservationReqDto;
 import com.sayye.reservation.dto.response.ReservationResDto;
 import com.sayye.reservation.service.ReservationService;
@@ -14,7 +13,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -89,10 +87,4 @@ public class RoomController {
             reservationService.getReservationsByRoomId(roomId, reservationDate));
     }
 
-    @PostMapping("/{roomId}/blocks")
-    public ResponseEntity<ReservationResDto> blockRoomTime(@PathVariable Long roomId,
-        @Valid @RequestBody BlockReqDto reqDto, Authentication authentication) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(reservationService.blockRoomTime(roomId, reqDto, authentication.getName()));
-    }
 }
