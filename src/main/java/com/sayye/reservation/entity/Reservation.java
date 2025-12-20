@@ -87,7 +87,7 @@ public class Reservation extends BaseEntity {
             .build();
     }
 
-    public static Reservation block(Room room, String userName, LocalTime startTime, LocalTime endTime, LocalDate reservationDate) {
+    public static Reservation createByAdmin(Room room, String userName, LocalTime startTime, LocalTime endTime, LocalDate reservationDate) {
         return Reservation.builder()
             .room(room)
             .userName(userName)
@@ -106,6 +106,10 @@ public class Reservation extends BaseEntity {
 
     public void cancel() {
         this.status = ReservationStatus.CANCELED;
+    }
+
+    public void cancelByAdmin() {
+        this.status = ReservationStatus.CANCELLED_BY_ADMIN;
     }
 
     public boolean isOwner(String userName, String phoneLastNumber) {

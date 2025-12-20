@@ -44,4 +44,17 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findByUserNameAndPhoneLastNumberOrderByCreatedAtDesc(String userName,
         String phoneLastNumber);
+
+    @Query("""
+            select r from Reservation r
+            where r.room.id = :roomId
+            and r.reservationDate = :date
+            AND r.status = 'RESERVED'
+            AND ((r.startTime < :endTime) AND (r.endTime > :startTime))
+      """)
+    List<Reservation> findConflictingReservations(@Param("roomId") Long roomId,
+        @Param("date") LocalDate date,
+        @Param("startTime") LocalTime startTime,
+        @Param("endTime") LocalTime endTime
+    );
 }
