@@ -92,7 +92,7 @@ public class Reservation extends BaseEntity {
             .room(room)
             .userName(userName)
             .startTime(startTime)
-            .status(ReservationStatus.UNAVAILABLE)
+            .status(ReservationStatus.ADMIN_RESERVED)
             .endTime(endTime)
             .reservationDate(reservationDate)
             .build();
