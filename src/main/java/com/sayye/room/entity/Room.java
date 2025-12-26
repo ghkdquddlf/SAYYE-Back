@@ -31,7 +31,6 @@ public class Room extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String roomName;
 
-    @Column(nullable = false)
     private Integer location;
 
     @Column(nullable = false)
