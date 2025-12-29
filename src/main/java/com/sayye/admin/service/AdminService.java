@@ -72,9 +72,19 @@ public class AdminService {
 
     @Transactional
     public AdminResponse signup(SignupRequest request) {
-        // 중복 체크
+        // userId 중복 체크
         if (adminRepository.findByUserId(request.getUserId()).isPresent()) {
             throw new ApiException(ErrorCode.ADMIN_USER_ID_DUPLICATED);
+        }
+
+        // 관리자 이름 중복 체크
+        if (adminRepository.existsByName(request.getName())) {
+            throw new ApiException(ErrorCode.ADMIN_NAME_DUPLICATED);
+        }
+
+        // 이메일 중복 체크
+        if (adminRepository.existsByEmail(request.getEmail())) {
+            throw new ApiException(ErrorCode.ADMIN_EMAIL_DUPLICATED);
         }
 
         // 정적 팩토리 메서드를 통한 객체 생성

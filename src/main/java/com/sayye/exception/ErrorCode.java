@@ -15,6 +15,8 @@ public enum ErrorCode {
     ADMIN_LOGIN_PASSWORD_INCORRECT(HttpStatus.BAD_REQUEST, "비밀번호를 다시 입력해주세요."),
     ADMIN_PASSWORD_SAME(HttpStatus.BAD_REQUEST, "기존 비밀번호와 새 비밀번호가 동일합니다."),
     ADMIN_USER_ID_DUPLICATED(HttpStatus.CONFLICT, "존재하는 유저입니다."),
+    ADMIN_EMAIL_DUPLICATED(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
+    ADMIN_NAME_DUPLICATED(HttpStatus.CONFLICT, "이미 존재하는 관리자 이름입니다."),
     ADMIN_ALREADY_LOGGED_OUT(HttpStatus.BAD_REQUEST, "이미 로그아웃된 유저입니다."),
     ADMIN_ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
 
