@@ -53,8 +53,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/classes/**").permitAll()  // 조회: 누구나
                 .requestMatchers("/rooms/**").authenticated()  // 방 CRUD: 관리자만
                 .requestMatchers("/courses/**").authenticated()  // 강좌 CRUD: 관리자만
-                
-                // 관리자 API - 인증 필수
+
+                // 공지 API
+               .requestMatchers(HttpMethod.GET, "/notices/**").permitAll() // 조회 : 누구나
+               .requestMatchers("/notices/**").authenticated() // 생성,수정,삭제 : 관리자만
+
+                                               // 관리자 API - 인증 필수
                 .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

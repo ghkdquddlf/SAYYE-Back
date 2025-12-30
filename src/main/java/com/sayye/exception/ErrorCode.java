@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러가 발생했습니다."),
 
+    // 공지
+    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND , "존재하지 않는 공지가항입니다."),
+
     // 관리자
     ADMIN_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "존재하지 않는 관리자입니다."),
     ADMIN_PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "기존 비밀번호가 일치하지 않습니다."),
