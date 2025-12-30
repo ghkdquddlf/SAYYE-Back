@@ -15,7 +15,7 @@ import lombok.Getter;
 
 @Getter
 @Entity
-@Table(name = "notice")
+@Table(name = "notices")
 public class Notice extends BaseEntity {
 
     @Id
@@ -29,7 +29,7 @@ public class Notice extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    private boolean status;
+    private boolean status;//현재 공지 게시 여부
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admins_id", nullable = false)
