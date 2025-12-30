@@ -8,6 +8,9 @@ import com.sayye.notice.dto.request.CreateNoticeReqDto;
 import com.sayye.notice.dto.response.NoticeResDto;
 import com.sayye.notice.entity.Notice;
 import com.sayye.notice.repository.NoticeRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,5 +46,14 @@ public class NoticeService {
         );
 
         return NoticeResDto.from(notice);
+    }
+
+    public List<NoticeResDto> getNotices() {
+        List<Notice> noticeList = noticeRepository.findAll();
+
+        return noticeList.stream()
+            .map(NoticeResDto::from)
+            .collect(Collectors.toList());
+
     }
 }

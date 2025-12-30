@@ -4,6 +4,7 @@ import com.sayye.notice.dto.request.CreateNoticeReqDto;
 import com.sayye.notice.dto.response.NoticeResDto;
 import com.sayye.notice.service.NoticeService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,12 @@ public class NoticeController {
         @PathVariable Long noticeId
     ){
         return ResponseEntity.ok(noticeService.getNotice(noticeId));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<NoticeResDto>> getNotices(){
+
+        return  ResponseEntity.ok(noticeService.getNotices());
     }
 
 }
