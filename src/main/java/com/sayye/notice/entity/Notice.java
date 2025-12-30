@@ -2,7 +2,7 @@ package com.sayye.notice.entity;
 
 import com.sayye.admin.entity.Admin;
 import com.sayye.baseEntity.BaseEntity;
-import com.sayye.notice.dto.request.CreateNoticeReqDto;
+import com.sayye.notice.dto.request.NoticeReqDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,11 +48,16 @@ public class Notice extends BaseEntity {
     }
 
 
-    public static Notice of(CreateNoticeReqDto request, Admin admin) {
+    public static Notice of(NoticeReqDto request, Admin admin) {
         return Notice.builder()
                    .title(request.getTitle())
                    .content(request.getContent())
                    .admin(admin)
                    .build();
+    }
+
+    public void update(NoticeReqDto reqDto){
+        this.title = reqDto.getTitle();
+        this.content = reqDto.getContent();
     }
 }

@@ -1,6 +1,5 @@
 package com.sayye.notice.dto.response;
 
-import com.sayye.notice.dto.request.CreateNoticeReqDto;
 import com.sayye.notice.entity.Notice;
 import java.time.LocalDateTime;
 import lombok.Builder;

@@ -4,13 +4,13 @@ import com.sayye.admin.entity.Admin;
 import com.sayye.admin.repository.AdminRepository;
 import com.sayye.exception.ApiException;
 import com.sayye.exception.ErrorCode;
-import com.sayye.notice.dto.request.CreateNoticeReqDto;
+import com.sayye.notice.dto.request.NoticeReqDto;
 import com.sayye.notice.dto.response.NoticeResDto;
 import com.sayye.notice.entity.Notice;
 import com.sayye.notice.repository.NoticeRepository;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +24,8 @@ public class NoticeService {
     private final AdminRepository adminRepository;
 
     @Transactional
-    public NoticeResDto create(
-        CreateNoticeReqDto reqDto,
+    public NoticeResDto createNotice(
+        NoticeReqDto reqDto,
         String adminName
         ) {
 
@@ -55,5 +55,16 @@ public class NoticeService {
             .map(NoticeResDto::from)
             .collect(Collectors.toList());
 
+    }
+
+    @Transactional
+    public NoticeResDto updateNotice(Long noticeId, NoticeReqDto reqDto) {
+        Notice notice = noticeRepository.findById(noticeId).orElseThrow(
+            ()-> new ApiException(ErrorCode.NOTICE_NOT_FOUND)
+        );
+
+        notice.update(reqDto);
+
+        return NoticeResDto.from(notice);
     }
 }
