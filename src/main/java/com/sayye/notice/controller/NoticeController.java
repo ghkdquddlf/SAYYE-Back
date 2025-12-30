@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,4 +54,12 @@ public class NoticeController {
         return ResponseEntity.ok(noticeService.updateNotice(noticeId,reqDto));
     }
 
+    @DeleteMapping("{noticeId}")
+    public ResponseEntity<String> deleteNotice(
+        @PathVariable Long noticeId
+    ){
+        noticeService.deleteNotice(noticeId);
+
+        return ResponseEntity.ok("삭제되었습니다.");
+    }
 }

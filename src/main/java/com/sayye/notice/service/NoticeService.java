@@ -67,4 +67,13 @@ public class NoticeService {
 
         return NoticeResDto.from(notice);
     }
+
+    @Transactional
+    public void deleteNotice(Long noticeId) {
+        Notice notice = noticeRepository.findById(noticeId).orElseThrow(
+            ()-> new ApiException(ErrorCode.NOTICE_NOT_FOUND)
+        );
+
+        noticeRepository.delete(notice);
+    }
 }
