@@ -2,6 +2,7 @@ package com.sayye.notice.entity;
 
 import com.sayye.admin.entity.Admin;
 import com.sayye.baseEntity.BaseEntity;
+import com.sayye.notice.dto.request.CreateNoticeReqDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,11 +12,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "notices")
+@NoArgsConstructor
 public class Notice extends BaseEntity {
 
     @Id
@@ -34,4 +38,21 @@ public class Notice extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admins_id", nullable = false)
     private Admin admin;
+
+    @Builder
+    public Notice(Admin admin,String title, String content){
+        this.admin = admin;
+        this.title = title;
+        this.content = content;
+        this.status = false;
+    }
+
+
+    public static Notice of(CreateNoticeReqDto request, Admin admin) {
+        return Notice.builder()
+                   .title(request.getTitle())
+                   .content(request.getContent())
+                   .admin(admin)
+                   .build();
+    }
 }

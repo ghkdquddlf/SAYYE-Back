@@ -1,5 +1,13 @@
 package com.sayye.notice.service;
 
+import com.sayye.admin.entity.Admin;
+import com.sayye.admin.repository.AdminRepository;
+import com.sayye.exception.ApiException;
+import com.sayye.exception.ErrorCode;
+import com.sayye.notice.dto.request.CreateNoticeReqDto;
+import com.sayye.notice.dto.response.NoticeResDto;
+import com.sayye.notice.entity.Notice;
+import com.sayye.notice.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -7,4 +15,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class NoticeService {
 
+    private final NoticeRepository noticeRepository;
+    private final AdminRepository adminRepository;
+
+    public NoticeResDto create(
+        CreateNoticeReqDto reqDto,
+        String adminName
+        ) {
+
+       Admin admin = adminRepository.findByUserId(adminName).orElseThrow(
+            ()-> new ApiException(ErrorCode.ADMIN_NOT_FOUND_ERROR));
+
+       // 만약 마스터, 어드민 뿐만 아니라 매니저,상담사 Role이 추가될경우 검증하는 로직 필요
+       Notice save = noticeRepository.save(Notice.of(reqDto,admin));
+
+       return NoticeResDto.from(save);
+    }
 }
