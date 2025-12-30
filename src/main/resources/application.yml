@@ -24,3 +24,6 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET:sayyeSecretKeyForJWTTokenGenerationMustBeAtLeast32BytesLong}
+
+server:
+  port: 8080
