@@ -16,5 +16,5 @@ public class NoticeReqDto {
     private String content;
 
     @NotNull
-    private boolean status;
+    private Boolean status;
 }

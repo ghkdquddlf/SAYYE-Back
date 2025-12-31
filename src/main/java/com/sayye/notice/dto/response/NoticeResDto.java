@@ -28,7 +28,7 @@ public class NoticeResDto {
                    .content(notice.getContent())
                    .createdAt(notice.getCreatedAt())
                    .updatedAt(notice.getUpdatedAt())
-                   .status(notice.isStatus())
+                   .status(notice.getStatus())
                    .build();
     }
 }
