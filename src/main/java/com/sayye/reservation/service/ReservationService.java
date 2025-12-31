@@ -80,8 +80,8 @@ public class ReservationService {
     @Transactional
     public ReservationResDto createReservation(Long roomId, ReservationReqDto reqDto) {
 
-        // 현재 시간이 10시 전이면
-        validateBookingAvailableTime();
+        // 익일까지만 예약 가능 검증
+        validateBookingAvailableTime(reqDto.getReservationDate());
 
         // 예약 시작 시간이 10시 전이면
         validateReservationTime(reqDto.getStartTime(), reqDto.getEndTime());
@@ -90,7 +90,8 @@ public class ReservationService {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException());
 
         // Todo 클래스 존재 여부 검증
-        Course course = courseRepository.findById(1L).orElseThrow(() -> new RuntimeException());
+        Course course = courseRepository.findById(reqDto.getCourseId())
+            .orElseThrow(() -> new RuntimeException());
 
         // 해당 예약자가 예약 날짜에 이미 예약 했다면
         validateDuplicateUser(reqDto.getUserName(), reqDto.getPhoneLastNumber(),
@@ -129,8 +130,10 @@ public class ReservationService {
 
         validateReservationTime(reqDto.getStartTime(), reqDto.getEndTime());
 
-        // 날짜가 바뀌었을 때만 이미 예약한 내역이 있는지 검증
+        // 날짜가 바뀌었을 때만 검증
         if (reservation.isDateChanged(reqDto.getReservationDate())) {
+            validateBookingAvailableTime(reqDto.getReservationDate());
+
             validateDuplicateUser(reqDto.getUserName(), reqDto.getPhoneLastNumber(),
                 reqDto.getReservationDate());
         }
@@ -187,8 +190,8 @@ public class ReservationService {
 
     // 예약 시 검증
     private void validateReservationTime(LocalTime startTime, LocalTime endTime) {
-        // 예약 시작 시간이 10시 전이면
-        if (startTime.isBefore(LocalTime.of(10, 0))) {
+        // 예약 시작 시간이 9시 전이면
+        if (startTime.isBefore(LocalTime.of(9, 0))) {
             throw new ApiException(ErrorCode.RESERVATION_INVALID_START_TIME);
         }
 
@@ -199,9 +202,17 @@ public class ReservationService {
         }
     }
 
-    private void validateBookingAvailableTime() {
-        if (LocalTime.now().isBefore(LocalTime.of(10, 0))) {
-            throw new ApiException(ErrorCode.RESERVATION_SYSTEM_NOT_OPEN_YET);
+    private void validateBookingAvailableTime(LocalDate reservationDate) {
+        // 현재 날짜와 시간
+        LocalDateTime now = LocalDateTime.now();
+
+        LocalDateTime reservationDateTime = reservationDate.atTime(LocalTime.MAX);
+
+        LocalDateTime endOfTomorrow = now.toLocalDate().plusDays(1).atTime(LocalTime.MAX);
+
+        if (reservationDateTime.isBefore(now) || reservationDateTime.isAfter(endOfTomorrow)) {
+            throw new ApiException(ErrorCode.INVALID_RESERVATION_DATE);
         }
+
     }
 }
