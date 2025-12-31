@@ -4,6 +4,7 @@ import com.sayye.admin.dto.request.UpdatePasswordRequest;
 import com.sayye.admin.dto.response.AdminResponse;
 import com.sayye.admin.service.AdminService;
 import com.sayye.reservation.dto.request.AdminReservationReqDto;
+import com.sayye.reservation.dto.request.CancelReservationReqDto;
 import com.sayye.reservation.dto.response.ReservationAdminResDto;
 import com.sayye.reservation.dto.response.ReservationResDto;
 import com.sayye.reservation.service.AdminReservationService;
@@ -85,6 +86,12 @@ public class AdminController {
         int pageNumber = (page <= 0) ? 1 : page;
 
         return ResponseEntity.ok(adminReservationService.getAllReservations(pageNumber));
+    }
+
+    @DeleteMapping("/reservations/{reservationId}")
+    public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId) {
+        adminReservationService.cancelReservation(reservationId);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -1,5 +1,7 @@
 package com.sayye.reservation.service;
 
+import com.sayye.exception.ApiException;
+import com.sayye.exception.ErrorCode;
 import com.sayye.reservation.dto.request.AdminReservationReqDto;
 import com.sayye.reservation.dto.response.ReservationAdminResDto;
 import com.sayye.reservation.dto.response.ReservationResDto;
@@ -30,7 +32,8 @@ public class AdminReservationService {
 
 
     @Transactional
-    public ReservationResDto createAdminReservation(Long roomId, AdminReservationReqDto reqDto, String adminId) {
+    public ReservationResDto createAdminReservation(Long roomId, AdminReservationReqDto reqDto,
+        String adminId) {
         // Todo 회의실 존재 여부 검증
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException());
 
@@ -55,5 +58,13 @@ public class AdminReservationService {
             Sort.by(Direction.DESC, SORT_BY));
 
         return reservationRepository.findAll(pageable).map(ReservationAdminResDto::from);
+    }
+
+    @Transactional
+    public void cancelReservation(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+            .orElseThrow(() -> new ApiException(ErrorCode.RESERVATION_NOT_FOUND));
+
+        reservation.cancelByAdmin();
     }
 }
