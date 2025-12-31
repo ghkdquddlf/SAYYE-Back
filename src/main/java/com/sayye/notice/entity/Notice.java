@@ -40,11 +40,11 @@ public class Notice extends BaseEntity {
     private Admin admin;
 
     @Builder
-    public Notice(Admin admin,String title, String content){
+    public Notice(Admin admin,String title, String content, boolean status){
         this.admin = admin;
         this.title = title;
         this.content = content;
-        this.status = false;
+        this.status = status;
     }
 
 
@@ -53,11 +53,16 @@ public class Notice extends BaseEntity {
                    .title(request.getTitle())
                    .content(request.getContent())
                    .admin(admin)
+                   .status(request.isStatus())
                    .build();
     }
 
     public void update(NoticeReqDto reqDto){
         this.title = reqDto.getTitle();
         this.content = reqDto.getContent();
+    }
+
+    public void toggle() {
+        this.status = !this.status;
     }
 }

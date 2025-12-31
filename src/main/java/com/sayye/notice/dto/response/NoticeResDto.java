@@ -19,6 +19,8 @@ public class NoticeResDto {
 
     private LocalDateTime updatedAt;
 
+    private boolean status;
+
     public static NoticeResDto from(Notice notice){
         return NoticeResDto.builder()
                    .id(notice.getId())
@@ -26,6 +28,7 @@ public class NoticeResDto {
                    .content(notice.getContent())
                    .createdAt(notice.getCreatedAt())
                    .updatedAt(notice.getUpdatedAt())
+                   .status(notice.isStatus())
                    .build();
     }
 }
