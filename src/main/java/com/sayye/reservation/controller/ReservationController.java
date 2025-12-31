@@ -38,15 +38,6 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    // 관리자 조회용
-    @GetMapping
-    public ResponseEntity<Page<ReservationAdminResDto>> getAllReservationsForAdmin(
-        @RequestParam(defaultValue = "1") int page) {
-        int pageNumber = (page <= 0) ? 1 : page;
-
-        return ResponseEntity.ok(reservationService.getAllReservationsForAdmin(pageNumber));
-    }
-
     @PostMapping
     public ResponseEntity<List<ReservationResDto>> getAllReservations(
         @Valid @RequestBody ReadReservationReqDto reqDto) {
@@ -58,7 +49,6 @@ public class ReservationController {
         @PathVariable Long reservationId, @Valid @RequestBody ReadReservationReqDto reqDto) {
         return ResponseEntity.ok(reservationService.getReservationDetail(reservationId, reqDto));
     }
-
 
 
     @PatchMapping("/{reservationId}")
