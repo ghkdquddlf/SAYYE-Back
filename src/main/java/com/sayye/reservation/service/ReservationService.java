@@ -4,7 +4,6 @@ import com.sayye.course.entity.Course;
 import com.sayye.course.repository.CourseRepository;
 import com.sayye.exception.ApiException;
 import com.sayye.exception.ErrorCode;
-import com.sayye.reservation.dto.request.AdminReservationReqDto;
 import com.sayye.reservation.dto.request.CancelReservationReqDto;
 import com.sayye.reservation.dto.request.ReadReservationReqDto;
 import com.sayye.reservation.dto.request.ReservationReqDto;
@@ -167,11 +166,11 @@ public class ReservationService {
     }
 
     private void validateDuplicateUser(String userName, String phone, LocalDate date) {
-        boolean alreadyReserved = reservationRepository.existsByUserNameAndPhoneLastNumberAndReservationDateAndStatusNot(
+        boolean alreadyReserved = reservationRepository.existsByUserNameAndPhoneLastNumberAndReservationDateAndStatusNotIn(
             userName,
             phone,
             date,
-            ReservationStatus.CANCELED
+            List.of(ReservationStatus.CANCELED, ReservationStatus.CANCELLED_BY_ADMIN)
         );
 
         if (alreadyReserved) {
