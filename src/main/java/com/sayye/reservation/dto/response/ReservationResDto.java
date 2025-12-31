@@ -12,6 +12,7 @@ public class ReservationResDto {
 
     private Long id;
     private String roomName;
+    private String courseName;
     private String userName;
     private String status;
     private LocalTime startTime;
@@ -22,6 +23,8 @@ public class ReservationResDto {
         return ReservationResDto.builder()
             .id(reservation.getId())
             .roomName(reservation.getRoom().getRoomName())
+            .courseName(reservation.getCourse() != null ? reservation.getCourse().getCourseName()
+                : "관리자 예약")
             .userName(reservation.getUserName())
             .status(reservation.getStatus().getDescription())
             .startTime(reservation.getStartTime())
