@@ -76,4 +76,15 @@ public class NoticeService {
 
         noticeRepository.delete(notice);
     }
+
+    @Transactional
+    public NoticeResDto updateNoticeStatus(Long noticeId) {
+        Notice notice = noticeRepository.findById(noticeId).orElseThrow(
+            ()-> new ApiException(ErrorCode.NOTICE_NOT_FOUND)
+        );
+
+        notice.toggle();
+
+        return NoticeResDto.from(notice);
+    }
 }

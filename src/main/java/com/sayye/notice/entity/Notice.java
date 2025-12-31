@@ -61,4 +61,8 @@ public class Notice extends BaseEntity {
         this.title = reqDto.getTitle();
         this.content = reqDto.getContent();
     }
+
+    public void toggle() {
+        this.status = !this.status;
+    }
 }
