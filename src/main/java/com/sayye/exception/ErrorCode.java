@@ -10,7 +10,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러가 발생했습니다."),
 
     // 공지
-    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND , "존재하지 않는 공지사항입니다."),
+    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 공지사항입니다."),
 
     // 관리자
     ADMIN_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "존재하지 않는 관리자입니다."),
@@ -40,8 +40,8 @@ public enum ErrorCode {
 
 
     // 회의실
-    ROOM_NAME_DUPLICATED(HttpStatus.CONFLICT,"이미 존재하는 회의실 이름입니다."),
-    ROOM_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 회의실 입니다." ),
+    ROOM_NAME_DUPLICATED(HttpStatus.CONFLICT, "이미 존재하는 회의실 이름입니다."),
+    ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회의실 입니다."),
 
 
     // 예약
@@ -52,7 +52,8 @@ public enum ErrorCode {
     RESERVATION_SYSTEM_NOT_OPEN_YET(HttpStatus.BAD_REQUEST, "예약은 오전 10시부터 가능합니다."),
     RESERVATION_EXCEED_MAX_DURATION(HttpStatus.BAD_REQUEST, "예약 이용 시간은 최대 2시간입니다."),
     RESERVATION_USER_DUPLICATED(HttpStatus.CONFLICT, "해당 예약자 정보로 동일한 날짜에 예약이 존재합니다."),
-    RESERVATION_TIME_OVERLAPPED(HttpStatus.CONFLICT,"이미 예약되어있습니다.");
+    RESERVATION_TIME_OVERLAPPED(HttpStatus.CONFLICT, "이미 예약되어있습니다."),
+    INVALID_RESERVATION_DATE(HttpStatus.BAD_REQUEST, "예약은 오늘과 내일 날짜만 가능합니다.");
 
     private final HttpStatus status;
     private final String message;

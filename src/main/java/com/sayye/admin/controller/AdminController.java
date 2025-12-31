@@ -4,11 +4,14 @@ import com.sayye.admin.dto.request.UpdatePasswordRequest;
 import com.sayye.admin.dto.response.AdminResponse;
 import com.sayye.admin.service.AdminService;
 import com.sayye.reservation.dto.request.AdminReservationReqDto;
+import com.sayye.reservation.dto.request.CancelReservationReqDto;
+import com.sayye.reservation.dto.response.ReservationAdminResDto;
 import com.sayye.reservation.dto.response.ReservationResDto;
 import com.sayye.reservation.service.AdminReservationService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -73,6 +77,21 @@ public class AdminController {
         @Valid @RequestBody AdminReservationReqDto reqDto, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(adminReservationService.createAdminReservation(roomId, reqDto, authentication.getName()));
+    }
+
+    // 관리자 조회용
+    @GetMapping("/reservations")
+    public ResponseEntity<Page<ReservationAdminResDto>> getAllReservationsForAdmin(
+        @RequestParam(defaultValue = "1") int page) {
+        int pageNumber = (page <= 0) ? 1 : page;
+
+        return ResponseEntity.ok(adminReservationService.getAllReservations(pageNumber));
+    }
+
+    @DeleteMapping("/reservations/{reservationId}")
+    public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId) {
+        adminReservationService.cancelReservation(reservationId);
+        return ResponseEntity.noContent().build();
     }
 
 }

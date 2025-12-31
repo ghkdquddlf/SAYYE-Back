@@ -1,10 +1,10 @@
 package com.sayye.reservation.repository;
 
 import com.sayye.reservation.entity.Reservation;
-import com.sayye.reservation.entity.Reservation;
 import com.sayye.reservation.entity.ReservationStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +22,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @EntityGraph(attributePaths = {"room", "course"})
     Page<Reservation> findAll(Pageable pageable);
 
-    boolean existsByUserNameAndPhoneLastNumberAndReservationDateAndStatusNot(String userName,
-        String phoneLastNumber, LocalDate reservationDate, ReservationStatus status);
+    boolean existsByUserNameAndPhoneLastNumberAndReservationDateAndStatusNotIn(String userName,
+        String phoneLastNumber, LocalDate reservationDate, Collection<ReservationStatus> statuses);
+
 
     @Query("""
             select count(r)
