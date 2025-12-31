@@ -33,14 +33,14 @@ public class Notice extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    private boolean status;//현재 공지 게시 여부
+    private Boolean status;//현재 공지 게시 여부
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admins_id", nullable = false)
     private Admin admin;
 
     @Builder
-    public Notice(Admin admin,String title, String content, boolean status){
+    public Notice(Admin admin,String title, String content, Boolean status){
         this.admin = admin;
         this.title = title;
         this.content = content;
@@ -53,7 +53,7 @@ public class Notice extends BaseEntity {
                    .title(request.getTitle())
                    .content(request.getContent())
                    .admin(admin)
-                   .status(request.isStatus())
+                   .status(request.getStatus())
                    .build();
     }
 

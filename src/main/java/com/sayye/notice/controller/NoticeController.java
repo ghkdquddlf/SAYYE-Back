@@ -63,7 +63,7 @@ public class NoticeController {
         return ResponseEntity.ok("삭제되었습니다.");
     }
 
-    @PutMapping("{noticeId}/togle")
+    @PutMapping("{noticeId}/toggle")
     public ResponseEntity<NoticeResDto> updateNoticeStatus(
         @PathVariable Long noticeId
     ){
