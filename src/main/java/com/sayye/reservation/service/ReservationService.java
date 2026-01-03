@@ -112,8 +112,9 @@ public class ReservationService {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException());
 
         List<Reservation> reservations = reservationRepository.
-            findAllByRoomIdAndReservationDateAndStatusNotOrderByStartTimeAsc(room.getId(),
-                reservationDate, ReservationStatus.CANCELED);
+            findAllByRoomIdAndReservationDateAndStatusNotInOrderByStartTimeAsc(room.getId(),
+                reservationDate,
+                List.of(ReservationStatus.CANCELED, ReservationStatus.CANCELLED_BY_ADMIN));
 
         return reservations.stream().map(ReservationResDto::from).toList();
 
