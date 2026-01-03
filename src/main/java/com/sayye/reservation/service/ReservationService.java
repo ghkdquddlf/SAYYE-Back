@@ -182,7 +182,8 @@ public class ReservationService {
     private void validateOverlap(Long roomId, LocalDate reservationDate, LocalTime startTime,
         LocalTime endTime, Long excludeId) {
         if (reservationRepository.existsOverlap(roomId, reservationDate, startTime, endTime,
-            ReservationStatus.CANCELED, excludeId) > 0) {
+            List.of(ReservationStatus.CANCELED, ReservationStatus.CANCELLED_BY_ADMIN), excludeId)
+            > 0) {
             throw new ApiException(ErrorCode.RESERVATION_TIME_OVERLAPPED);
         }
     }
