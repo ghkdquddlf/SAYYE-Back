@@ -31,28 +31,29 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             from  Reservation r
             where r.room.id = :roomId
             and r.reservationDate = :date
-            and r.status <> :cancelledStatus
+            and r.status NOT IN :excludedStatuses
             and (r.startTime < :endTime and r.endTime > :startTime)
             and (:excludeId is null or r.id <> :roomId)
         """)
     Long existsOverlap(@Param("roomId") Long roomId, @Param("date") LocalDate date,
         @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime,
-        @Param("cancelledStatus") ReservationStatus cancelledStatus,
+        @Param("excludedStatuses") List<ReservationStatus> excludedStatuses,
         @Param("excludeId") Long excludeId);
 
-    List<Reservation> findAllByRoomIdAndReservationDateAndStatusNotOrderByStartTimeAsc(Long roomId,
-        LocalDate date, ReservationStatus status);
+    List<Reservation> findAllByRoomIdAndReservationDateAndStatusNotInOrderByStartTimeAsc(
+        Long roomId,
+        LocalDate date, List<ReservationStatus> statuses);
 
     List<Reservation> findByUserNameAndPhoneLastNumberOrderByCreatedAtDesc(String userName,
         String phoneLastNumber);
 
     @Query("""
-            select r from Reservation r
-            where r.room.id = :roomId
-            and r.reservationDate = :date
-            AND r.status = 'RESERVED'
-            AND ((r.startTime < :endTime) AND (r.endTime > :startTime))
-      """)
+              select r from Reservation r
+              where r.room.id = :roomId
+              and r.reservationDate = :date
+              AND r.status = 'RESERVED'
+              AND ((r.startTime < :endTime) AND (r.endTime > :startTime))
+        """)
     List<Reservation> findConflictingReservations(@Param("roomId") Long roomId,
         @Param("date") LocalDate date,
         @Param("startTime") LocalTime startTime,

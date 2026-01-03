@@ -112,8 +112,9 @@ public class ReservationService {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException());
 
         List<Reservation> reservations = reservationRepository.
-            findAllByRoomIdAndReservationDateAndStatusNotOrderByStartTimeAsc(room.getId(),
-                reservationDate, ReservationStatus.CANCELED);
+            findAllByRoomIdAndReservationDateAndStatusNotInOrderByStartTimeAsc(room.getId(),
+                reservationDate,
+                List.of(ReservationStatus.CANCELED, ReservationStatus.CANCELLED_BY_ADMIN));
 
         return reservations.stream().map(ReservationResDto::from).toList();
 
@@ -182,7 +183,8 @@ public class ReservationService {
     private void validateOverlap(Long roomId, LocalDate reservationDate, LocalTime startTime,
         LocalTime endTime, Long excludeId) {
         if (reservationRepository.existsOverlap(roomId, reservationDate, startTime, endTime,
-            ReservationStatus.CANCELED, excludeId) > 0) {
+            List.of(ReservationStatus.CANCELED, ReservationStatus.CANCELLED_BY_ADMIN), excludeId)
+            > 0) {
             throw new ApiException(ErrorCode.RESERVATION_TIME_OVERLAPPED);
         }
     }
