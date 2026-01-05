@@ -87,4 +87,16 @@ public class NoticeService {
 
         return NoticeResDto.from(notice);
     }
+
+    @Transactional
+    public NoticeResDto updateNoticePinned(Long noticeId) {
+        Notice notice = noticeRepository.findById(noticeId).orElseThrow(
+            ()-> new ApiException(ErrorCode.NOTICE_NOT_FOUND)
+        );
+
+
+        notice.togglePinned();
+
+        return NoticeResDto.from(notice);
+    }
 }

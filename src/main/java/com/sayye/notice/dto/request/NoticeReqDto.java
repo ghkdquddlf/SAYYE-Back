@@ -17,4 +17,7 @@ public class NoticeReqDto {
 
     @NotNull
     private Boolean status;
+
+    @NotNull
+    private Boolean pinned;
 }
