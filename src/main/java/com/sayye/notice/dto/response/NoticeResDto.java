@@ -19,7 +19,9 @@ public class NoticeResDto {
 
     private LocalDateTime updatedAt;
 
-    private boolean status;
+    private Boolean status;
+
+    private Boolean pinned;
 
     public static NoticeResDto from(Notice notice){
         return NoticeResDto.builder()
@@ -29,6 +31,7 @@ public class NoticeResDto {
                    .createdAt(notice.getCreatedAt())
                    .updatedAt(notice.getUpdatedAt())
                    .status(notice.getStatus())
+                   .pinned(notice.getPinned())
                    .build();
     }
 }

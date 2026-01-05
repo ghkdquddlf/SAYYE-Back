@@ -69,4 +69,11 @@ public class NoticeController {
     ){
         return ResponseEntity.ok(noticeService.updateNoticeStatus(noticeId));
     }
+
+    @PutMapping("{noticeId}/pinnedToggle")
+    public ResponseEntity<NoticeResDto> updateNoticePinned(
+        @PathVariable Long noticeId
+    ){
+        return ResponseEntity.ok(noticeService.updateNoticePinned(noticeId));
+    }
 }
