@@ -1,7 +1,6 @@
 package com.sayye.domain.admin.controller;
 
 import com.sayye.global.config.JwtProvider;
-import com.sayye.global.response.CommonResponse;
 import com.sayye.domain.admin.dto.request.LoginRequest;
 import com.sayye.domain.admin.dto.request.RefreshTokenRequest;
 import com.sayye.domain.admin.dto.request.SignupRequest;
@@ -29,14 +28,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<CommonResponse<AdminResponse>> signup(
+    public ResponseEntity<AdminResponse> signup(
         @Valid @RequestBody SignupRequest request
     ) {
-        return ResponseEntity.ok(CommonResponse.success(authService.signup(request)));
+        return ResponseEntity.ok(authService.signup(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse<Map<String, String>>> login(
+    public ResponseEntity<Map<String, String>> login(
         @Valid @RequestBody LoginRequest loginRequest,
         HttpServletRequest request
     ) {
@@ -48,28 +47,34 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(CommonResponse.success(Map.of("role", loginResult.getRole())));
+                .body(Map.of("role", loginResult.getRole()));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<CommonResponse<Void>> logout(HttpServletRequest request) {
+    public ResponseEntity<String> logout(HttpServletRequest request) {
         authService.logout(request);
-        return ResponseEntity.ok(CommonResponse.success("로그아웃 되었습니다.", null));
+        return ResponseEntity.ok()
+                .body("성공적으로 로그아웃 되었습니다.");
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<CommonResponse<Void>> refresh(
+    public ResponseEntity<Void> refresh(
         HttpServletRequest httpRequest,
         @Valid @RequestBody RefreshTokenRequest request
     ) {
         TokenPair tokens = authService.refresh(httpRequest, request);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(JwtProvider.AUTHORIZATION_HEADER, JwtProvider.BEARER_PREFIX + tokens.getAccessToken());
-        headers.set("Refresh-Token", tokens.getRefreshToken());
+        HttpHeaders headers = getHttpHeaders(tokens);
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(CommonResponse.success());
+                .build();
+    }
+
+    private static HttpHeaders getHttpHeaders(TokenPair tokens) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(JwtProvider.AUTHORIZATION_HEADER, JwtProvider.BEARER_PREFIX + tokens.getAccessToken());
+        headers.set("Refresh-Token", tokens.getRefreshToken());
+        return headers;
     }
 }
