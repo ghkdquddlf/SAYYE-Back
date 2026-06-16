@@ -2,7 +2,6 @@ package com.sayye.domain.room.entity;
 
 import com.sayye.global.entity.BaseEntity;
 import com.sayye.domain.reservation.entity.Reservation;
-import com.sayye.domain.room.dto.request.RoomReqDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,19 +47,18 @@ public class Room extends BaseEntity {
         this.capacity = capacity;
         this.description = description;
     }
-    public static Room of(RoomReqDto roomReqDto){
-        return new Room(roomReqDto.getRoomName(),roomReqDto.getLocation(),roomReqDto.getCapacity(),roomReqDto.getDescription());
+    public static Room of(String roomName, Integer location, Integer capacity, String description) {
+        return new Room(roomName, location, capacity, description);
     }
 
-    public void update(RoomReqDto roomReqDto) {
-        this.roomName = roomReqDto.getRoomName();
-        this.location = roomReqDto.getLocation();
-        this.capacity = roomReqDto.getCapacity();
-        this.description = roomReqDto.getDescription();
+    public void update(String roomName, Integer location, Integer capacity, String description) {
+        this.roomName = roomName;
+        this.location = location;
+        this.capacity = capacity;
+        this.description = description;
     }
 
-    public boolean existsRoom(RoomReqDto resDto){
-        return roomName.equals(resDto.getRoomName());
-
+    public boolean isSameName(String roomName) {
+        return this.roomName.equals(roomName);
     }
 }

@@ -25,7 +25,7 @@ public class RoomService {
         if (roomRepository.existsByRoomName(roomReqDto.getRoomName())) {
             throw new ApiException(ErrorCode.ROOM_NAME_DUPLICATED);
         }
-        Room room = Room.of(roomReqDto);
+        Room room = Room.of(roomReqDto.getRoomName(), roomReqDto.getLocation(), roomReqDto.getCapacity(), roomReqDto.getDescription());
 
 
         Room saved = roomRepository.save(room);
@@ -70,13 +70,13 @@ public class RoomService {
 
         // 중복된 회의실 이름인지 확인
         // 이름의 변경이 감지되었을 때만 if문이 실행되도록 로직 구성
-        if (!room.existsRoom(roomReqDto)
+        if (!room.isSameName(roomReqDto.getRoomName())
                 && roomRepository.existsByRoomName(roomReqDto.getRoomName())) {
             throw new ApiException(ErrorCode.ROOM_NAME_DUPLICATED);
         }
 
         // JPA가 Dirty Checking 을 통해 객체의 변경을 감지하기 때문에 별도로 Repository에 반영해줄 필요가 없음
-        room.update(roomReqDto);
+        room.update(roomReqDto.getRoomName(), roomReqDto.getLocation(), roomReqDto.getCapacity(), roomReqDto.getDescription());
 
         return RoomResDto.from(room);
     }

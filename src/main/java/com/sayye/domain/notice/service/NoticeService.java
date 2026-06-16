@@ -33,7 +33,7 @@ public class NoticeService {
             ()-> new ApiException(ErrorCode.ADMIN_NOT_FOUND_ERROR));
 
        // 만약 마스터, 어드민 뿐만 아니라 매니저,상담사 Role이 추가될경우 검증하는 로직 필요
-       Notice save = noticeRepository.save(Notice.of(reqDto,admin));
+       Notice save = noticeRepository.save(Notice.of(reqDto.getTitle(), reqDto.getContent(), reqDto.getStatus(), reqDto.getPinned(), admin));
 
        return NoticeResDto.from(save);
     }
@@ -63,7 +63,7 @@ public class NoticeService {
             ()-> new ApiException(ErrorCode.NOTICE_NOT_FOUND)
         );
 
-        notice.update(reqDto);
+        notice.update(reqDto.getTitle(), reqDto.getContent());
 
         return NoticeResDto.from(notice);
     }

@@ -2,7 +2,6 @@ package com.sayye.domain.notice.entity;
 
 import com.sayye.domain.admin.entity.Admin;
 import com.sayye.global.entity.BaseEntity;
-import com.sayye.domain.notice.dto.request.NoticeReqDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -53,19 +52,19 @@ public class Notice extends BaseEntity {
     }
 
 
-    public static Notice of(NoticeReqDto request, Admin admin) {
+    public static Notice of(String title, String content, Boolean status, Boolean pinned, Admin admin) {
         return Notice.builder()
-                   .title(request.getTitle())
-                   .content(request.getContent())
+                   .title(title)
+                   .content(content)
                    .admin(admin)
-                   .status(request.getStatus())
-                   .pinned(request.getPinned())
+                   .status(status)
+                   .pinned(pinned)
                    .build();
     }
 
-    public void update(NoticeReqDto reqDto){
-        this.title = reqDto.getTitle();
-        this.content = reqDto.getContent();
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
     public void toggle() {
