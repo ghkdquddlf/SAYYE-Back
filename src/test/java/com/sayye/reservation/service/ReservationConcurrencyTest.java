@@ -2,14 +2,13 @@ package com.sayye.reservation.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.sayye.course.entity.Course;
-import com.sayye.course.repository.CourseRepository;
-import com.sayye.reservation.dto.request.ReservationReqDto;
-import com.sayye.reservation.entity.ReservationStatus;
-import com.sayye.reservation.repository.ReservationRepository;
-import com.sayye.room.dto.request.RoomReqDto;
-import com.sayye.room.entity.Room;
-import com.sayye.room.repository.RoomRepository;
+import com.sayye.domain.course.entity.Course;
+import com.sayye.domain.course.repository.CourseRepository;
+import com.sayye.domain.reservation.dto.request.ReservationReqDto;
+import com.sayye.domain.reservation.entity.ReservationStatus;
+import com.sayye.domain.reservation.repository.ReservationRepository;
+import com.sayye.domain.room.entity.Room;
+import com.sayye.domain.room.repository.RoomRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ class ReservationConcurrencyTest {
 
     @BeforeEach
     void setUp() {
-        room = roomRepository.save(Room.of(new RoomReqDto("테스트 회의실", 1, 10, "동시성 테스트용")));
+        room = roomRepository.save(Room.of("테스트 회의실", 1, 10, "동시성 테스트용"));
 
         course = courseRepository.save(Course.builder()
             .courseName("테스트 클래스")

@@ -1,5 +1,6 @@
 package com.sayye.reservation.service;
 
+import com.sayye.domain.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
