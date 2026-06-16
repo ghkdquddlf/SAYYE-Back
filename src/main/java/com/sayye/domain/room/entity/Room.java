@@ -1,0 +1,66 @@
+package com.sayye.domain.room.entity;
+
+import com.sayye.global.entity.BaseEntity;
+import com.sayye.domain.reservation.entity.Reservation;
+import com.sayye.domain.room.dto.request.RoomReqDto;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Entity
+@Table(name = "rooms")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Room extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String roomName;
+
+    private Integer location;
+
+    @Column(nullable = false)
+    @Min(1)
+    private Integer capacity;
+
+    private String description;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reservation> reservations = new ArrayList<>();
+
+    private Room(String roomName, Integer location, Integer capacity, String description) {
+        this.roomName = roomName;
+        this.location = location;
+        this.capacity = capacity;
+        this.description = description;
+    }
+    public static Room of(RoomReqDto roomReqDto){
+        return new Room(roomReqDto.getRoomName(),roomReqDto.getLocation(),roomReqDto.getCapacity(),roomReqDto.getDescription());
+    }
+
+    public void update(RoomReqDto roomReqDto) {
+        this.roomName = roomReqDto.getRoomName();
+        this.location = roomReqDto.getLocation();
+        this.capacity = roomReqDto.getCapacity();
+        this.description = roomReqDto.getDescription();
+    }
+
+    public boolean existsRoom(RoomReqDto resDto){
+        return roomName.equals(resDto.getRoomName());
+
+    }
+}
