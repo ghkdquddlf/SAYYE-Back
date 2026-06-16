@@ -86,7 +86,7 @@ public class ReservationService {
         validateReservationTime(reqDto.getStartTime(), reqDto.getEndTime());
 
         // Todo 회의실 존재 여부 검증
-        Room room = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException());
+        Room room = roomRepository.findByIdWithLock(roomId).orElseThrow(() -> new RuntimeException());
 
         // Todo 클래스 존재 여부 검증
         Course course = courseRepository.findById(reqDto.getCourseId())

@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "notices")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notice extends BaseEntity {
 
     @Id
@@ -42,8 +43,8 @@ public class Notice extends BaseEntity {
     @JoinColumn(name = "admins_id", nullable = false)
     private Admin admin;
 
-    @Builder
-    public Notice(Admin admin,String title, String content, Boolean status, Boolean pinned){
+    @Builder(access = AccessLevel.PRIVATE)
+    private Notice(Admin admin,String title, String content, Boolean status, Boolean pinned){
         this.admin = admin;
         this.title = title;
         this.content = content;
