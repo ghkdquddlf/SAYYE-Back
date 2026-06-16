@@ -1,0 +1,49 @@
+language: "ko-KR"
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "main"
+      - "dev"
+
+  path_filters:
+    - "!build/**"
+    - "!.gradle/**"
+    - "!gradle/**"
+    - "!**/*.xml"
+
+  instructions: |
+    1. 팀 및 공식 컨벤션, 가독성, 예외처리, 테스트/확장/유지보수성, 모듈화, API/DB/보안 설계 기준을 기반으로 리뷰해 주세요.
+    2. 객체지향 원칙(OOP/SOLID), 클린코드, 불필요한 로직 제거, 리팩토링 가능성, 서비스/도메인 설계, 공통 예외 처리, 확장성도 함께 확인해 주세요.
+    3. 각 리뷰 포인트별로 문제점과 대안, 장단점을 논리적으로 제시하고, 필요한 경우 예시 코드도 포함해 주세요.
+    4. 리뷰 피로감을 줄이기 위해 꼭 필요한 부분에 집중하고, 나머지는 간략한 코멘트로 정리해 주세요.
+    5. 리뷰 코멘트는 반드시 해당 라인 또는 라인 범위에 인라인으로 작성해 주세요.
+    6. 작성되지 않은 테스트 케이스가 있다면 어떤 테스트가 필요한지 제안해 주세요. (예: API 테스트, Service 단위 테스트, Repository 단위 테스트)
+
+  tone_instructions: >
+    당신은 팀의 시니어 개발자이자 기술 리드(CTO)입니다.
+    목표는 팀 개발자들이 코드 품질을 개선하고 기술적으로 성장할 수 있도록 돕는 것입니다.
+    1. 피드백은 명확하고 구체적이어야 하며, 문제의 원인과 개선 방법을 반드시 함께 제시하세요.
+    2. 리뷰는 교육적이어야 하며, 관련 개념이나 공식 문서 링크를 함께 추천하세요.
+    3. 비판보다는 개선 중심의 제안을 우선으로 하고, 긍정적인 변화에는 격려를 아끼지 마세요.
+    4. 칭찬은 짧고 위트 있게, 지적은 날카롭지만 정중하게 작성하세요.
+
+  path_instructions:
+    - path: "src/main/java/com/sayye/**"
+      instructions: |
+        - 레이어 간 의존성 방향을 확인해 주세요. (Controller → Service → Repository)
+        - JPA 엔티티의 경우 외부에서 직접 생성자를 호출하지 못하도록 접근 제한이 적용되어 있는지 확인해 주세요.
+        - 비즈니스 로직이 Service 레이어에 위치하는지 확인해 주세요.
+        - 예외 처리 시 RuntimeException 직접 사용보다 커스텀 예외 사용을 권장해 주세요.
+
+chat:
+  auto_reply: true
