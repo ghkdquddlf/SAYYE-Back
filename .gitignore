@@ -99,7 +99,6 @@ logs/
 *.secret
 secret/
 secrets/
-config/
 *.local.properties
 
 ### Database Files ###
