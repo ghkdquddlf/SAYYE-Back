@@ -7,6 +7,7 @@ import com.sayye.domain.course.repository.CourseRepository;
 import com.sayye.domain.reservation.dto.request.ReservationReqDto;
 import com.sayye.domain.reservation.entity.ReservationStatus;
 import com.sayye.domain.reservation.repository.ReservationRepository;
+import com.sayye.domain.reservation.service.ReservationService;
 import com.sayye.domain.room.entity.Room;
 import com.sayye.domain.room.repository.RoomRepository;
 import java.time.LocalDate;
