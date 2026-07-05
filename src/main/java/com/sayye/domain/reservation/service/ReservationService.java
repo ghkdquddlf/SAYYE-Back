@@ -2,19 +2,22 @@ package com.sayye.domain.reservation.service;
 
 import com.sayye.domain.course.entity.Course;
 import com.sayye.domain.course.repository.CourseRepository;
-import com.sayye.global.exception.ApiException;
-import com.sayye.global.exception.ErrorCode;
 import com.sayye.domain.reservation.dto.request.CancelReservationReqDto;
 import com.sayye.domain.reservation.dto.request.ReadReservationReqDto;
 import com.sayye.domain.reservation.dto.request.ReservationReqDto;
 import com.sayye.domain.reservation.dto.request.UpdateReservationReqDto;
 import com.sayye.domain.reservation.dto.response.ReservationAdminResDto;
+import com.sayye.domain.reservation.dto.response.ReservationRequestStatusResDto;
 import com.sayye.domain.reservation.dto.response.ReservationResDto;
 import com.sayye.domain.reservation.entity.Reservation;
+import com.sayye.domain.reservation.entity.ReservationReq;
 import com.sayye.domain.reservation.entity.ReservationStatus;
 import com.sayye.domain.reservation.repository.ReservationRepository;
+import com.sayye.domain.reservation.repository.ReservationReqRepository;
 import com.sayye.domain.room.entity.Room;
 import com.sayye.domain.room.repository.RoomRepository;
+import com.sayye.global.exception.ApiException;
+import com.sayye.global.exception.ErrorCode;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,10 +41,46 @@ public class ReservationService {
     private static final String SORT_BY = "createdAt";
 
     private final ReservationRepository reservationRepository;
+    private final ReservationReqRepository reservationReqRepository;
 
     // Todo service 구현 완료 시 변경 필요
     private final RoomRepository roomRepository;
     private final CourseRepository courseRepository;
+
+    @Transactional
+    public ReservationReq submitReservation(Long roomId, ReservationReqDto reqDto) {
+
+        Room room = roomRepository.findById(roomId).orElseThrow(()-> new ApiException(ErrorCode.ROOM_NOT_FOUND));
+
+        return reservationReqRepository.save(ReservationReq.toEntity(reqDto, room.getId()));
+    }
+
+    public ReservationRequestStatusResDto getRequestStatus(Long requestId) {
+        ReservationReq req = findReservationReq(requestId);
+        return ReservationRequestStatusResDto.from(req);
+    }
+
+    @Transactional
+    public ReservationReqDto markProcessing(Long requestId) {
+        ReservationReq req = findReservationReq(requestId);
+        req.markProcessing();
+        return req.toDto();
+    }
+
+    @Transactional
+    public void markConfirmed(Long requestId, Long reservationId) {
+        findReservationReq(requestId).markConfirmed(reservationId);
+    }
+
+    @Transactional
+    public void markFailed(Long requestId, String failureMessage) {
+        findReservationReq(requestId).markFailed(failureMessage);
+    }
+
+    private ReservationReq findReservationReq(Long requestId) {
+        return reservationReqRepository.findById(requestId)
+            .orElseThrow(() -> new ApiException(ErrorCode.RESERVATION_NOT_FOUND));
+    }
 
     @Transactional
     public void cancelReservation(Long reservationId, CancelReservationReqDto reqDto) {

@@ -1,11 +1,12 @@
 package com.sayye.domain.reservation.controller;
 
 import com.sayye.domain.reservation.dto.request.CancelReservationReqDto;
-import com.sayye.domain.reservation.dto.response.ReservationAdminResDto;
-import com.sayye.domain.reservation.dto.request.ReservationReqDto;
-import com.sayye.domain.reservation.dto.response.ReservationResDto;
 import com.sayye.domain.reservation.dto.request.ReadReservationReqDto;
+import com.sayye.domain.reservation.dto.request.ReservationReqDto;
 import com.sayye.domain.reservation.dto.request.UpdateReservationReqDto;
+import com.sayye.domain.reservation.dto.response.ReservationAdminResDto;
+import com.sayye.domain.reservation.dto.response.ReservationRequestStatusResDto;
+import com.sayye.domain.reservation.dto.response.ReservationResDto;
 import com.sayye.domain.reservation.service.ReservationService;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
@@ -57,5 +58,10 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.updateReservation(reservationId, reqDto));
     }
 
+    @GetMapping("/requests/{requestId}/status")
+    public ResponseEntity<ReservationRequestStatusResDto> getRequestStatus(
+        @PathVariable Long requestId) {
+        return ResponseEntity.ok(reservationService.getRequestStatus(requestId));
+    }
 
 }
