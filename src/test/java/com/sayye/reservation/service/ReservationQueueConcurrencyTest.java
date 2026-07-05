@@ -48,7 +48,7 @@ class ReservationQueueConcurrencyTest {
     void setUp() {
         room = roomRepository.save(Room.of("큐 테스트 회의실", 1, 10, "큐 동시성 테스트용"));
         // @PostConstruct 이후 생성된 방이라 큐에 등록되어 있지 않으므로 수동 등록
-        roomQueueManager.registerRoom(room);
+        roomQueueManager.registerRoom(room.getId());
 
         course = courseRepository.save(Course.builder()
             .courseName("테스트 클래스")

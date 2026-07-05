@@ -1,11 +1,12 @@
 package com.sayye.global.config;
 
+import com.sayye.domain.reservation.dto.request.ReservationReqDto;
 import com.sayye.domain.reservation.dto.response.ReservationResDto;
-import com.sayye.domain.reservation.entity.ReservationReq;
-import com.sayye.domain.reservation.repository.ReservationReqRepository;
 import com.sayye.domain.reservation.service.ReservationService;
-import com.sayye.domain.room.entity.Room;
-import com.sayye.domain.room.repository.RoomRepository;
+import com.sayye.domain.room.dto.response.RoomResDto;
+import com.sayye.domain.room.service.RoomService;
+import com.sayye.global.exception.ApiException;
+import com.sayye.global.exception.ErrorCode;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
@@ -15,21 +16,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RoomQueueManager {
 
     private final Map<Long, BlockingQueue<Long>> roomQueue = new ConcurrentHashMap<>();
     private final ExecutorService executorService;
-    private final RoomRepository roomRepository;
+    private final RoomService roomService;
     private final ReservationService reservationService;
-    private final ReservationReqRepository reservationReqRepository;
 
     // 테스트 훅 - 기본값은 no-op
-    private Consumer<Long> onProcessingStart = id -> {};
-    private Consumer<Long> onProcessingComplete = id -> {};
+    private volatile Consumer<Long> onProcessingStart = id -> {};
+    private volatile Consumer<Long> onProcessingComplete = id -> {};
 
     public void setOnProcessingStart(Consumer<Long> hook) {
         this.onProcessingStart = hook;
@@ -41,20 +43,20 @@ public class RoomQueueManager {
 
     @PostConstruct
     public void init() {
-        List<Room> rooms = roomRepository.findAll();
-        rooms.forEach(this::registerRoom);
+        List<RoomResDto> rooms = roomService.getAllRooms();
+        rooms.forEach(room -> registerRoom(room.getId()));
     }
 
-    public void registerRoom(Room room) {
+    public void registerRoom(Long roomId) {
         BlockingQueue<Long> queue = new LinkedBlockingQueue<>();
-        roomQueue.put(room.getId(), queue);
-        startConsumer(room.getId(), queue);
+        roomQueue.put(roomId, queue);
+        startConsumer(roomId, queue);
     }
 
     public void enqueue(Long roomId, Long requestId) {
         BlockingQueue<Long> queue = roomQueue.get(roomId);
         if (queue == null) {
-            throw new IllegalArgumentException("존재하지 않는 회의실입니다: " + roomId);
+            throw new ApiException(ErrorCode.ROOM_NOT_FOUND);
         }
         queue.offer(requestId);
     }
@@ -64,21 +66,21 @@ public class RoomQueueManager {
             while (true) {
                 try {
                     Long requestId = queue.take();
-                    ReservationReq req = reservationReqRepository.findById(requestId)
-                        .orElseThrow(() -> new IllegalStateException("예약 요청을 찾을 수 없습니다: " + requestId));
-                    req.markProcessing();
-                    reservationReqRepository.save(req);
-
-                    onProcessingStart.accept(requestId);
                     try {
-                        ReservationResDto result = reservationService.createReservation(roomId, req.toDto());
-                        req.markConfirmed(result.getId());
-                    } catch (Exception e) {
-                        req.markFailed(e.getMessage());
-                    }
-                    onProcessingComplete.accept(requestId);
+                        ReservationReqDto reqDto = reservationService.markProcessing(requestId);
 
-                    reservationReqRepository.save(req);
+                        onProcessingStart.accept(requestId);
+                        try {
+                            ReservationResDto result = reservationService.createReservation(roomId, reqDto);
+                            reservationService.markConfirmed(requestId, result.getId());
+                        } catch (Exception e) {
+                            reservationService.markFailed(requestId, e.getMessage());
+                        }
+                        onProcessingComplete.accept(requestId);
+                    } catch (Exception e) {
+                        log.error("예약 요청 처리 중 예상치 못한 오류 발생. roomId={}, requestId={}",
+                            roomId, requestId, e);
+                    }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;
