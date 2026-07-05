@@ -2,11 +2,14 @@ package com.sayye.domain.room.controller;
 
 
 import com.sayye.domain.reservation.dto.request.ReservationReqDto;
+import com.sayye.domain.reservation.dto.response.ReservationAcceptResDto;
 import com.sayye.domain.reservation.dto.response.ReservationResDto;
+import com.sayye.domain.reservation.entity.ReservationReq;
 import com.sayye.domain.reservation.service.ReservationService;
 import com.sayye.domain.room.dto.request.RoomReqDto;
 import com.sayye.domain.room.dto.response.RoomResDto;
 import com.sayye.domain.room.service.RoomService;
+import com.sayye.global.config.RoomQueueManager;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
@@ -30,6 +33,7 @@ public class RoomController {
 
     private final RoomService roomService;
     private final ReservationService reservationService;
+    private final RoomQueueManager roomQueueManager;
 
     @PostMapping
     public ResponseEntity<RoomResDto> createRoom(
@@ -73,10 +77,12 @@ public class RoomController {
 
     // Reservation에서 이동
     @PostMapping("/{roomId}/reservations")
-    public ResponseEntity<ReservationResDto> createReservation(@PathVariable Long roomId,
+    public ResponseEntity<ReservationAcceptResDto> createReservation(@PathVariable Long roomId,
         @Valid @RequestBody ReservationReqDto reqDto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(reservationService.createReservation(roomId, reqDto));
+        ReservationReq req = reservationService.submitReservation(roomId, reqDto);
+        roomQueueManager.enqueue(roomId, req.getId());
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+            .body(ReservationAcceptResDto.of(req.getId()));
     }
 
     // Reservation에서 이동
