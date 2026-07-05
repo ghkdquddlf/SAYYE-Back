@@ -3,12 +3,6 @@ package com.sayye.global.config;
 import com.sayye.domain.reservation.dto.request.ReservationReqDto;
 import com.sayye.domain.reservation.dto.response.ReservationResDto;
 import com.sayye.domain.reservation.service.ReservationService;
-import com.sayye.domain.room.dto.response.RoomResDto;
-import com.sayye.domain.room.service.RoomService;
-import com.sayye.global.exception.ApiException;
-import com.sayye.global.exception.ErrorCode;
-import jakarta.annotation.PostConstruct;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,7 +20,6 @@ public class RoomQueueManager {
 
     private final Map<Long, BlockingQueue<Long>> roomQueue = new ConcurrentHashMap<>();
     private final ExecutorService executorService;
-    private final RoomService roomService;
     private final ReservationService reservationService;
 
     // 테스트 훅 - 기본값은 no-op
@@ -41,24 +34,14 @@ public class RoomQueueManager {
         this.onProcessingComplete = hook;
     }
 
-    @PostConstruct
-    public void init() {
-        List<RoomResDto> rooms = roomService.getAllRooms();
-        rooms.forEach(room -> registerRoom(room.getId()));
-    }
-
-    public void registerRoom(Long roomId) {
-        BlockingQueue<Long> queue = new LinkedBlockingQueue<>();
-        roomQueue.put(roomId, queue);
-        startConsumer(roomId, queue);
-    }
-
     public void enqueue(Long roomId, Long requestId) {
-        BlockingQueue<Long> queue = roomQueue.get(roomId);
-        if (queue == null) {
-            throw new ApiException(ErrorCode.ROOM_NOT_FOUND);
-        }
-        queue.offer(requestId);
+        roomQueue.computeIfAbsent(roomId, this::createQueue).offer(requestId);
+    }
+
+    private BlockingQueue<Long> createQueue(Long roomId) {
+        BlockingQueue<Long> queue = new LinkedBlockingQueue<>();
+        startConsumer(roomId, queue);
+        return queue;
     }
 
     private void startConsumer(Long roomId, BlockingQueue<Long> queue) {
