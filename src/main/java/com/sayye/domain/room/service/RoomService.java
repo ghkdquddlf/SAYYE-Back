@@ -1,6 +1,7 @@
 package com.sayye.domain.room.service;
 
 
+import com.sayye.global.config.RoomQueueManager;
 import com.sayye.global.exception.ApiException;
 import com.sayye.global.exception.ErrorCode;
 import com.sayye.domain.room.dto.request.RoomReqDto;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RoomService {
 
     private final RoomRepository roomRepository;
+    private final RoomQueueManager roomQueueManager;
 
     public RoomResDto createRoom(RoomReqDto roomReqDto) {
 
@@ -29,6 +31,8 @@ public class RoomService {
 
 
         Room saved = roomRepository.save(room);
+
+        roomQueueManager.registerRoom(saved.getId());
 
         return RoomResDto.from(saved);
     }
